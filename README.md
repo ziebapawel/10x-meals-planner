@@ -1,94 +1,108 @@
-# 10x Astro Starter
+# Meals Planner
 
-A modern, opinionated starter template for building fast, accessible, and AI-friendly web applications.
+An intelligent meal planning assistant designed to simplify and automate the creation of meal plans and shopping lists for multi-person households. This web application leverages an AI engine to generate personalized recipes based on user-specific criteria such as the number of people, dietary preferences, and caloric needs, with user account management powered by Supabase.
+
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
 
 ## Tech Stack
 
-- [Astro](https://astro.build/) v5.5.5 - Modern web framework for building fast, content-focused websites
-- [React](https://react.dev/) v19.0.0 - UI library for building interactive components
-- [TypeScript](https://www.typescriptlang.org/) v5 - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) v4.0.17 - Utility-first CSS framework
+### Frontend
+- **Framework**: [Astro 5](https://astro.build/)
+- **UI Library**: [React 19](https://react.dev/) for interactive components
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
+- **Styling**: [Tailwind 4](https://tailwindcss.com/)
+- **Component Library**: [Shadcn/ui](https://ui.shadcn.com/)
 
-## Prerequisites
+### Backend
+- **Platform**: [Supabase](https://supabase.io/)
+  - **Database**: PostgreSQL
+  - **Authentication**: Supabase Auth
+  - **Backend-as-a-Service**: Supabase SDK
 
-- Node.js v22.14.0 (as specified in `.nvmrc`)
-- npm (comes with Node.js)
+### AI
+- **Service**: [Openrouter.ai](https://openrouter.ai/) for access to various AI models
 
-## Getting Started
+### CI/CD & Hosting
+- **CI/CD**: GitHub Actions
+- **Hosting**: DigitalOcean (Docker)
 
-1. Clone the repository:
+## Getting Started Locally
 
-```bash
-git clone https://github.com/przeprogramowani/10x-astro-starter.git
-cd 10x-astro-starter
-```
+### Prerequisites
+- Node.js `v22.14.0` (as specified in `.nvmrc`)
+- npm (included with Node.js)
 
-2. Install dependencies:
+### Installation
 
-```bash
-npm install
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd 10x-meals-planner
+    ```
 
-3. Run the development server:
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```bash
-npm run dev
-```
+3.  **Set up environment variables:**
 
-4. Build for production:
+    Create a `.env` file in the root of the project and add the necessary API keys for Supabase and Openrouter.ai.
 
-```bash
-npm run build
-```
+    ```env
+    # Supabase
+    PUBLIC_SUPABASE_URL=your_supabase_url
+    PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+    # Openrouter.ai
+    OPENROUTER_API_KEY=your_openrouter_api_key
+    ```
+
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+
+    The application will be available at `http://localhost:4321`.
 
 ## Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint issues
+-   `npm run dev`: Starts the development server.
+-   `npm run build`: Builds the application for production.
+-   `npm run preview`: Previews the production build locally.
+-   `npm run lint`: Lints the codebase using ESLint.
+-   `npm run lint:fix`: Automatically fixes ESLint errors.
+-   `npm run format`: Formats code using Prettier.
 
-## Project Structure
+## Project Scope
 
-```md
-.
-├── src/
-│   ├── layouts/    # Astro layouts
-│   ├── pages/      # Astro pages
-│   │   └── api/    # API endpoints
-│   ├── components/ # UI components (Astro & React)
-│   └── assets/     # Static assets
-├── public/         # Public assets
-```
+### Key Features (MVP)
+- **User Authentication**: Registration, login, and logout functionality using Supabase.
+- **Meal Plan Generation**: A form to define requirements for the meal plan, including the number of people, days, cuisine type, excluded ingredients, and individual calorie targets.
+- **AI-Powered Recipes**: Integration with Openrouter.ai to generate personalized recipes. The AI calculates portion sizes in grams to match caloric goals.
+- **Interactive Plan Viewer**: A grid-based interface to view the generated meal plan.
+- **Meal Regeneration**: Ability to regenerate a single meal within the plan without affecting others.
+- **Save & History**: Save generated plans to a user's account and access a history of all saved plans.
+- **Aggregated Shopping List**: Automatically generate a shopping list from a saved plan, with ingredients aggregated and categorized by store department.
 
-## AI Development Support
+### Out of Scope (for MVP)
+- Manual creation, addition, or editing of meals.
+- Rating system for meals or plans.
+- Sharing plans or shopping lists with other users.
+- Dedicated mobile applications (iOS/Android).
+- Exporting meal plans or shopping lists to external files (e.g., PDF).
+- Checking off items on the shopping list.
+- Manual editing of the generated shopping list.
 
-This project is configured with AI development tools to enhance the development experience, providing guidelines for:
-
-- Project structure
-- Coding practices
-- Frontend development
-- Styling with Tailwind
-- Accessibility best practices
-- Astro and React guidelines
-
-### Cursor IDE
-
-The project includes AI rules in `.cursor/rules/` directory that help Cursor IDE understand the project structure and provide better code suggestions.
-
-### GitHub Copilot
-
-AI instructions for GitHub Copilot are available in `.github/copilot-instructions.md`
-
-### Windsurf
-
-The `.windsurfrules` file contains AI configuration for Windsurf.
-
-## Contributing
-
-Please follow the AI guidelines and coding practices defined in the AI configuration files when contributing to this project.
+## Project Status
+The project is currently in the **development phase**. The focus is on delivering the Minimum Viable Product (MVP) as outlined in the project scope.
 
 ## License
-
-MIT
+This project is licensed under the **MIT License**.
