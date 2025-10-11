@@ -11,10 +11,10 @@ import type { Tables } from "./db/database.types";
  * This is stored as JSON in the `recipe_data` column of the `meals` table.
  */
 export interface RecipeDto {
-	name: string;
-	ingredients: { item: string; quantity: string }[];
-	instructions: string[];
-	portions: { person: number; grams: number }[];
+  name: string;
+  ingredients: { item: string; quantity: string }[];
+  instructions: string[];
+  portions: { person: number; grams: number }[];
 }
 
 /**
@@ -29,28 +29,28 @@ export interface RecipeDto {
  * of the `meal_plans` table.
  */
 export interface GenerateMealPlanCommand {
-	peopleCount: number;
-	daysCount: number;
-	cuisine: string;
-	excludedIngredients: string[];
-	calorieTargets: { person: number; calories: number }[];
-	mealsToPlan: string[];
+  peopleCount: number;
+  daysCount: number;
+  cuisine: string;
+  excludedIngredients: string[];
+  calorieTargets: { person: number; calories: number }[];
+  mealsToPlan: string[];
 }
 
 /**
  * DTO for a single meal within a generated meal plan.
  */
 export interface MealInPlanDto {
-	type: string;
-	recipe: RecipeDto;
+  type: string;
+  recipe: RecipeDto;
 }
 
 /**
  * DTO for a single day's plan within a generated meal plan.
  */
 export interface DayPlanDto {
-	day: number;
-	meals: MealInPlanDto[];
+  day: number;
+  meals: MealInPlanDto[];
 }
 
 /**
@@ -58,9 +58,9 @@ export interface DayPlanDto {
  * This is the response from the `/api/meal-plans/generate` endpoint.
  */
 export interface GeneratedMealPlanDto {
-	plan: {
-		days: DayPlanDto[];
-	};
+  plan: {
+    days: DayPlanDto[];
+  };
 }
 
 /**
@@ -68,7 +68,7 @@ export interface GeneratedMealPlanDto {
  * It uses a strongly-typed `recipeData` instead of a generic JSON type.
  */
 export type MealToCreate = Omit<Tables<"meals">, "id" | "created_at" | "plan_id" | "recipe_data"> & {
-	recipeData: RecipeDto;
+  recipeData: RecipeDto;
 };
 
 /**
@@ -76,8 +76,8 @@ export type MealToCreate = Omit<Tables<"meals">, "id" | "created_at" | "plan_id"
  * This is the request body for the `POST /api/meal-plans` endpoint.
  */
 export interface CreateMealPlanCommand {
-	planInput: GenerateMealPlanCommand;
-	meals: MealToCreate[];
+  planInput: GenerateMealPlanCommand;
+  meals: MealToCreate[];
 }
 
 /**
@@ -96,9 +96,9 @@ export type MealPlanListItemDto = Pick<MealPlanDto, "id" | "created_at" | "plan_
  * DTO for pagination information.
  */
 export interface PaginationDto {
-	currentPage: number;
-	pageSize: number;
-	totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 /**
@@ -106,8 +106,8 @@ export interface PaginationDto {
  * This is the response from the `GET /api/meal-plans` endpoint.
  */
 export interface ListMealPlansDto {
-	data: MealPlanListItemDto[];
-	pagination: PaginationDto;
+  data: MealPlanListItemDto[];
+  pagination: PaginationDto;
 }
 
 /**
@@ -115,8 +115,8 @@ export interface ListMealPlansDto {
  * shopping list. This is the response from `GET /api/meal-plans/{planId}`.
  */
 export type MealPlanDetailsDto = MealPlanDto & {
-	meals: MealDto[];
-	shoppingList?: ShoppingListDto | null;
+  meals: MealDto[];
+  shoppingList?: ShoppingListDto | null;
 };
 
 /**
@@ -130,7 +130,7 @@ export type MealPlanDetailsDto = MealPlanDto & {
  * Corresponds to a row in the `meals` table, but with a typed `recipe_data`.
  */
 export type MealDto = Omit<Tables<"meals">, "recipe_data"> & {
-	recipe_data: RecipeDto;
+  recipe_data: RecipeDto;
 };
 
 /**
@@ -138,18 +138,18 @@ export type MealDto = Omit<Tables<"meals">, "recipe_data"> & {
  * This is the request body for the `POST /api/meals/regenerate` endpoint.
  */
 export interface RegenerateMealCommand {
-	planInput: GenerateMealPlanCommand;
-	mealToRegenerate: {
-		day: number;
-		type: string;
-	};
-	existingMealsForDay: {
-		type: string;
-		recipe: {
-			name: string;
-			portions: { person: number; grams: number }[];
-		};
-	}[];
+  planInput: GenerateMealPlanCommand;
+  mealToRegenerate: {
+    day: number;
+    type: string;
+  };
+  existingMealsForDay: {
+    type: string;
+    recipe: {
+      name: string;
+      portions: { person: number; grams: number }[];
+    };
+  }[];
 }
 
 /**
@@ -157,9 +157,9 @@ export interface RegenerateMealCommand {
  * This is the response from the `/api/meals/regenerate` endpoint.
  */
 export interface RegeneratedMealDto {
-	day: number;
-	type: string;
-	recipe: RecipeDto;
+  day: number;
+  type: string;
+  recipe: RecipeDto;
 }
 
 /**
@@ -172,8 +172,8 @@ export interface RegeneratedMealDto {
  * Represents a single item in the shopping list.
  */
 export interface ShoppingListItem {
-	item: string;
-	quantity: string;
+  item: string;
+  quantity: string;
 }
 
 /**
@@ -187,5 +187,5 @@ export type ShoppingListContent = Record<string, ShoppingListItem[]>;
  * Corresponds to a row in the `shopping_lists` table, but with typed `list_content`.
  */
 export type ShoppingListDto = Omit<Tables<"shopping_lists">, "list_content"> & {
-	list_content: ShoppingListContent;
+  list_content: ShoppingListContent;
 };
