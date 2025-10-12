@@ -83,7 +83,7 @@ export async function regenerateSingleMeal(command: RegenerateMealCommand): Prom
         Authorization: `Bearer ${OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "openai/gpt-4-turbo-preview",
+        model: "google/gemini-2.5-pro",
         messages: [
           {
             role: "system",
@@ -128,7 +128,7 @@ export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingL
         Authorization: `Bearer ${OPENROUTER_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "openai/gpt-4-turbo-preview",
+        model: "google/gemini-2.5-pro",
         messages: [
           {
             role: "system",
