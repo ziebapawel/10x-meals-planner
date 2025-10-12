@@ -24,7 +24,7 @@ export const POST: APIRoute = async (context) => {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
-      });
+     });
     }
 
     // Parse and validate request body
@@ -54,8 +54,7 @@ export const POST: APIRoute = async (context) => {
   } catch (error) {
     console.error("Error in regenerate meal endpoint:", error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
 
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
@@ -63,4 +62,3 @@ export const POST: APIRoute = async (context) => {
     });
   }
 };
-
