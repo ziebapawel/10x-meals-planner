@@ -1,15 +1,56 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Calendar, Users, ChefHat, Plus, ArrowRight } from "lucide-react";
+import { Calendar, Users, ChefHat, Plus, ArrowRight, Clock, Utensils, Flame, Star } from "lucide-react";
 import { toast } from "sonner";
-import type { MealPlanListItemDto, ListMealPlansDto } from "../types";
+import type { MealPlanListItemDto, ListMealPlansDto, GenerateMealPlanCommand } from "../types";
 
 interface MealPlanHistoryState {
   data: ListMealPlansDto | null;
   loading: boolean;
   error: string | null;
 }
+
+// Helper function to get cuisine emoji
+const getCuisineEmoji = (cuisine: string): string => {
+  const cuisineEmojis: Record<string, string> = {
+    'Italian': '🍝',
+    'Polish': '🥟',
+    'Mexican': '🌮',
+    'Asian': '🍜',
+    'Indian': '🍛',
+    'French': '🥐',
+    'Mediterranean': '🫒',
+    'American': '🍔',
+    'Thai': '🌶️',
+    'Chinese': '🥢',
+    'Japanese': '🍣',
+    'Greek': '🧀',
+    'Spanish': '🥘',
+    'German': '🥨',
+    'Turkish': '🥙',
+  };
+  return cuisineEmojis[cuisine] || '🍽️';
+};
+
+// Helper function to calculate total calories
+const calculateTotalCalories = (planInput: GenerateMealPlanCommand): number => {
+  return planInput.calorieTargets.reduce((total, target) => total + target.calories, 0);
+};
+
+// Helper function to get difficulty level based on ingredients
+const getDifficultyLevel = (planInput: GenerateMealPlanCommand): { level: string; color: string; icon: string } => {
+  const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
+  const excludedCount = planInput.excludedIngredients.length;
+  
+  if (excludedCount > 5 || totalMeals > 15) {
+    return { level: 'Zaawansowany', color: 'text-red-600 bg-red-50', icon: '🔥' };
+  } else if (excludedCount > 2 || totalMeals > 10) {
+    return { level: 'Średni', color: 'text-yellow-600 bg-yellow-50', icon: '⚡' };
+  } else {
+    return { level: 'Łatwy', color: 'text-green-600 bg-green-50', icon: '⭐' };
+  }
+};
 
 export function MealPlanHistoryView() {
   const [state, setState] = useState<MealPlanHistoryState>({
@@ -137,45 +178,135 @@ export function MealPlanHistoryView() {
 
         {/* Plans Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.id} 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => handlePlanClick(plan.id)}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="text-lg">Plan posiłków</span>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(plan.created_at).toLocaleDateString("pl-PL")}</span>
+          {plans.map((plan) => {
+            const planInput = plan.plan_input as GenerateMealPlanCommand;
+            const totalCalories = calculateTotalCalories(planInput);
+            const difficulty = getDifficultyLevel(planInput);
+            const cuisineEmoji = getCuisineEmoji(planInput.cuisine);
+            const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
+            
+            return (
+              <Card 
+                key={plan.id} 
+                className="cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group border-2 hover:border-primary/20"
+                onClick={() => handlePlanClick(plan.id)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">{cuisineEmoji}</span>
+                        <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                          Plan {planInput.cuisine}
+                        </CardTitle>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar className="w-3 h-3" />
+                        <span>{new Date(plan.created_at).toLocaleDateString("pl-PL")}</span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{(plan.plan_input as any).daysCount} dni</span>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  {/* Main Stats */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Calendar className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm font-medium text-blue-800">{planInput.daysCount}</span>
+                      </div>
+                      <p className="text-xs text-blue-600">dni</p>
+                    </div>
+                    
+                    <div className="bg-green-50 rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Users className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium text-green-800">{planInput.peopleCount}</span>
+                      </div>
+                      <p className="text-xs text-green-600">
+                        {planInput.peopleCount === 1 ? 'osoba' : 'osób'}
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="w-4 h-4" />
-                    <span>{(plan.plan_input as any).peopleCount} {(plan.plan_input as any).peopleCount === 1 ? 'osoba' : 'osób'}</span>
+
+                  {/* Calories and Meals */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-orange-50 rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Flame className="w-4 h-4 text-orange-600" />
+                        <span className="text-sm font-medium text-orange-800">{totalCalories}</span>
+                      </div>
+                      <p className="text-xs text-orange-600">kcal/dzień</p>
+                    </div>
+                    
+                    <div className="bg-purple-50 rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Utensils className="w-4 h-4 text-purple-600" />
+                        <span className="text-sm font-medium text-purple-800">{totalMeals}</span>
+                      </div>
+                      <p className="text-xs text-purple-600">posiłków</p>
+                    </div>
                   </div>
-                  
-                  {(plan.plan_input as any).cuisine && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <ChefHat className="w-4 h-4" />
-                      <span>{(plan.plan_input as any).cuisine}</span>
+
+                  {/* Difficulty Badge */}
+                  <div className="flex items-center justify-center">
+                    <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${difficulty.color}`}>
+                      <span>{difficulty.icon}</span>
+                      <span>{difficulty.level}</span>
+                    </div>
+                  </div>
+
+                  {/* Meal Types */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground">Typy posiłków:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {planInput.mealsToPlan.map((mealType) => (
+                        <span 
+                          key={mealType}
+                          className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-700"
+                        >
+                          {mealType === 'breakfast' && '🌅'}
+                          {mealType === 'lunch' && '☀️'}
+                          {mealType === 'dinner' && '🌙'}
+                          {mealType === 'snack' && '🍎'}
+                          <span className="ml-1 capitalize">
+                            {mealType === 'breakfast' ? 'Śniadanie' :
+                             mealType === 'lunch' ? 'Obiad' :
+                             mealType === 'dinner' ? 'Kolacja' :
+                             mealType === 'snack' ? 'Przekąska' : mealType}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Excluded Ingredients */}
+                  {planInput.excludedIngredients.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">Wykluczone składniki:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {planInput.excludedIngredients.slice(0, 3).map((ingredient) => (
+                          <span 
+                            key={ingredient}
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-red-50 text-red-700 border border-red-200"
+                          >
+                            🚫 {ingredient}
+                          </span>
+                        ))}
+                        {planInput.excludedIngredients.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-600">
+                            +{planInput.excludedIngredients.length - 3} więcej
+                          </span>
+                        )}
+                      </div>
                     </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Pagination */}

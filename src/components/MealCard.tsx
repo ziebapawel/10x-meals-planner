@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import type { MealInPlanDto, RecipeDto } from "../types";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, ChefHat } from "lucide-react";
 
 interface MealCardProps {
   meal: MealInPlanDto;
@@ -12,31 +12,62 @@ interface MealCardProps {
   showRegenerate?: boolean;
 }
 
+// Helper function to get meal type emoji and Polish name
+const getMealTypeInfo = (type: string): { emoji: string; name: string; color: string } => {
+  const mealTypes: Record<string, { emoji: string; name: string; color: string }> = {
+    'breakfast': { emoji: '🌅', name: 'Śniadanie', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
+    'lunch': { emoji: '☀️', name: 'Obiad', color: 'bg-orange-50 text-orange-700 border-orange-200' },
+    'dinner': { emoji: '🌙', name: 'Kolacja', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+    'snack': { emoji: '🍎', name: 'Przekąska', color: 'bg-green-50 text-green-700 border-green-200' },
+  };
+  return mealTypes[type] || { emoji: '🍽️', name: type, color: 'bg-gray-50 text-gray-700 border-gray-200' };
+};
+
+
 export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegenerating, showRegenerate = true }: MealCardProps) {
+  const mealTypeInfo = getMealTypeInfo(meal.type);
+
   return (
-    <Card className="group hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer animate-fade-in">
-      <CardHeader
-        className="pb-3"
-        onClick={() => onViewDetails(meal.recipe)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            onViewDetails(meal.recipe);
-          }
-        }}
-        aria-label={`Zobacz szczegóły: ${meal.recipe.name}`}
-      >
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{meal.type}</p>
-            <CardTitle className="text-base group-hover:text-primary transition-colors">{meal.recipe.name}</CardTitle>
+    <Card 
+      className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer animate-fade-in border-2 hover:border-primary/20"
+      onClick={() => onViewDetails(meal.recipe)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onViewDetails(meal.recipe);
+        }
+      }}
+      aria-label={`Zobacz szczegóły: ${meal.recipe.name}`}
+    >
+      <CardHeader className="pb-3">
+        <div className="space-y-3">
+          {/* Meal Type Badge */}
+          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${mealTypeInfo.color}`}>
+            <span className="text-sm">{mealTypeInfo.emoji}</span>
+            <span>{mealTypeInfo.name}</span>
           </div>
+
+          {/* Recipe Name */}
+          <CardTitle className="text-base group-hover:text-primary transition-colors leading-tight">
+            {meal.recipe.name}
+          </CardTitle>
         </div>
       </CardHeader>
-      {showRegenerate && (
-        <CardContent className="pt-0">
+      
+      <CardContent className="space-y-4">
+        {/* Recipe Stats - Only ingredients count */}
+        <div className="bg-gray-50 rounded-lg p-3 text-center">
+          <div className="flex items-center justify-center gap-1 mb-1">
+            <ChefHat className="w-4 h-4 text-gray-600" />
+            <span className="text-sm font-medium text-gray-800">{meal.recipe.ingredients.length}</span>
+          </div>
+          <p className="text-xs text-gray-600">składników</p>
+        </div>
+
+        {/* Regenerate Button */}
+        {showRegenerate && (
           <Button
             variant="outline"
             size="sm"
@@ -45,23 +76,23 @@ export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegeneratin
               onRegenerate(day, meal.type);
             }}
             disabled={isRegenerating}
-            className="w-full"
+            className="w-full group/btn"
             aria-label={`Regeneruj ${meal.type}`}
           >
             {isRegenerating ? (
               <>
-                <RefreshCw className="animate-spin" />
+                <RefreshCw className="animate-spin w-4 h-4 mr-2" />
                 Regenerowanie...
               </>
             ) : (
               <>
-                <RefreshCw />
+                <RefreshCw className="w-4 h-4 mr-2 group-hover/btn:rotate-180 transition-transform" />
                 Regeneruj
               </>
             )}
           </Button>
-        </CardContent>
-      )}
+        )}
+      </CardContent>
     </Card>
   );
 }
