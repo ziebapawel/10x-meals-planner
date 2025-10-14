@@ -6,11 +6,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { UserPlus, Mail, Lock, AlertCircle, CheckCircle } from "lucide-react";
-import {
-  registerSchema,
-  type RegisterFormData,
-} from "../../lib/validation/auth.schemas";
+import { registerSchema, type RegisterFormData } from "../../lib/validation/auth.schemas";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
+
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 export function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,11 +52,11 @@ export function RegisterForm() {
         }),
       });
 
+      const responseData: ErrorResponse = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Nie udało się utworzyć konta"
-        );
+        // Use the error message from the backend (already translated by auth-error.service)
+        throw new Error(responseData.message || "Nie udało się utworzyć konta");
       }
 
       setSuccess(true);
@@ -113,11 +115,7 @@ export function RegisterForm() {
                 aria-invalid={!!errors.email}
                 disabled={isLoading || success}
               />
-              {errors.email && (
-                <p className="text-sm text-destructive">
-                  {errors.email.message}
-                </p>
-              )}
+              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
             {/* Password Field */}
@@ -134,20 +132,13 @@ export function RegisterForm() {
                 aria-invalid={!!errors.password}
                 disabled={isLoading || success}
               />
-              {errors.password && (
-                <p className="text-sm text-destructive">
-                  {errors.password.message}
-                </p>
-              )}
+              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
               <PasswordStrengthIndicator password={password} />
             </div>
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <Label
-                htmlFor="confirmPassword"
-                className="flex items-center gap-2"
-              >
+              <Label htmlFor="confirmPassword" className="flex items-center gap-2">
                 <Lock className="size-4" />
                 Potwierdź hasło
               </Label>
@@ -159,24 +150,12 @@ export function RegisterForm() {
                 aria-invalid={!!errors.confirmPassword}
                 disabled={isLoading || success}
               />
-              {errors.confirmPassword && (
-                <p className="text-sm text-destructive">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
+              {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading || success}
-            >
-              {isLoading
-                ? "Tworzenie konta..."
-                : success
-                  ? "Sukces!"
-                  : "Utwórz konto"}
+            <Button type="submit" className="w-full" disabled={isLoading || success}>
+              {isLoading ? "Tworzenie konta..." : success ? "Sukces!" : "Utwórz konto"}
             </Button>
 
             {/* Login Link */}
@@ -192,4 +171,3 @@ export function RegisterForm() {
     </div>
   );
 }
-

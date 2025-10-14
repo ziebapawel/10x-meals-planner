@@ -3,4 +3,4 @@ export { RegisterForm } from "./RegisterForm";
 export { ForgotPasswordForm } from "./ForgotPasswordForm";
 export { ResetPasswordForm } from "./ResetPasswordForm";
 export { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
-
+export { LogoutButton } from "./LogoutButton";

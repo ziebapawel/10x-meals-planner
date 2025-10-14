@@ -11,13 +11,7 @@ interface MealCardProps {
   isRegenerating: boolean;
 }
 
-export function MealCard({
-  meal,
-  day,
-  onRegenerate,
-  onViewDetails,
-  isRegenerating,
-}: MealCardProps) {
+export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegenerating }: MealCardProps) {
   return (
     <Card className="group hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer animate-fade-in">
       <CardHeader
@@ -35,12 +29,8 @@ export function MealCard({
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
-              {meal.type}
-            </p>
-            <CardTitle className="text-base group-hover:text-primary transition-colors">
-              {meal.recipe.name}
-            </CardTitle>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{meal.type}</p>
+            <CardTitle className="text-base group-hover:text-primary transition-colors">{meal.recipe.name}</CardTitle>
           </div>
         </div>
       </CardHeader>
@@ -72,4 +62,3 @@ export function MealCard({
     </Card>
   );
 }
-

@@ -49,10 +49,7 @@ export async function generateShoppingList(
   }
 
   // Get all meals for the plan
-  const { data: meals, error: mealsError } = await supabase
-    .from("meals")
-    .select("*")
-    .eq("plan_id", planId);
+  const { data: meals, error: mealsError } = await supabase.from("meals").select("*").eq("plan_id", planId);
 
   if (mealsError) {
     console.error("Error getting meals:", mealsError);
@@ -83,4 +80,3 @@ export async function generateShoppingList(
 
   return shoppingList as unknown as ShoppingListDto;
 }
-

@@ -31,11 +31,7 @@ const CUISINES = [
   "Amerykańska",
 ];
 
-export function PlanGenerationForm({
-  form,
-  onSubmit,
-  isLoading,
-}: PlanGenerationFormProps) {
+export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGenerationFormProps) {
   const {
     register,
     handleSubmit,
@@ -99,11 +95,7 @@ export function PlanGenerationForm({
             {...register("peopleCount", { valueAsNumber: true })}
             aria-invalid={!!errors.peopleCount}
           />
-          {errors.peopleCount && (
-            <p className="text-sm text-destructive">
-              {errors.peopleCount.message}
-            </p>
-          )}
+          {errors.peopleCount && <p className="text-sm text-destructive">{errors.peopleCount.message}</p>}
         </div>
 
         {/* Days Count */}
@@ -117,11 +109,7 @@ export function PlanGenerationForm({
             {...register("daysCount", { valueAsNumber: true })}
             aria-invalid={!!errors.daysCount}
           />
-          {errors.daysCount && (
-            <p className="text-sm text-destructive">
-              {errors.daysCount.message}
-            </p>
-          )}
+          {errors.daysCount && <p className="text-sm text-destructive">{errors.daysCount.message}</p>}
         </div>
       </div>
 
@@ -140,9 +128,7 @@ export function PlanGenerationForm({
             </option>
           ))}
         </select>
-        {errors.cuisine && (
-          <p className="text-sm text-destructive">{errors.cuisine.message}</p>
-        )}
+        {errors.cuisine && <p className="text-sm text-destructive">{errors.cuisine.message}</p>}
       </div>
 
       {/* Meals to Plan */}
@@ -154,24 +140,15 @@ export function PlanGenerationForm({
               <Checkbox
                 id={meal.id}
                 checked={mealsToPlan?.includes(meal.id)}
-                onCheckedChange={(checked) =>
-                  handleMealToggle(meal.id, !!checked)
-                }
+                onCheckedChange={(checked) => handleMealToggle(meal.id, !!checked)}
               />
-              <Label
-                htmlFor={meal.id}
-                className="text-sm font-normal cursor-pointer"
-              >
+              <Label htmlFor={meal.id} className="text-sm font-normal cursor-pointer">
                 {meal.label}
               </Label>
             </div>
           ))}
         </div>
-        {errors.mealsToPlan && (
-          <p className="text-sm text-destructive">
-            {errors.mealsToPlan.message}
-          </p>
-        )}
+        {errors.mealsToPlan && <p className="text-sm text-destructive">{errors.mealsToPlan.message}</p>}
       </div>
 
       {/* Calorie Targets */}
@@ -193,9 +170,7 @@ export function PlanGenerationForm({
                 aria-invalid={!!errors.calorieTargets?.[i]?.calories}
               />
               {errors.calorieTargets?.[i]?.calories && (
-                <p className="text-sm text-destructive">
-                  {errors.calorieTargets[i]?.calories?.message}
-                </p>
+                <p className="text-sm text-destructive">{errors.calorieTargets[i]?.calories?.message}</p>
               )}
             </div>
           ))}
@@ -222,9 +197,7 @@ export function PlanGenerationForm({
             type="button"
             variant="outline"
             onClick={() => {
-              const input = document.getElementById(
-                "newIngredient"
-              ) as HTMLInputElement;
+              const input = document.getElementById("newIngredient") as HTMLInputElement;
               if (input) {
                 handleAddIngredient(input.value);
                 input.value = "";
@@ -237,10 +210,7 @@ export function PlanGenerationForm({
         {excludedIngredients && excludedIngredients.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {excludedIngredients.map((ingredient, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md"
-              >
+              <div key={index} className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md">
                 <span className="text-sm">{ingredient}</span>
                 <button
                   type="button"
@@ -263,4 +233,3 @@ export function PlanGenerationForm({
     </form>
   );
 }
-

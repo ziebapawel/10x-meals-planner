@@ -1,9 +1,6 @@
 import type { APIRoute } from "astro";
 import { UUIDParamSchema } from "../../../../lib/validation/schemas";
-import {
-  getMealPlanDetails,
-  deleteMealPlan,
-} from "../../../../lib/services/meal-plan.service";
+import { getMealPlanDetails, deleteMealPlan } from "../../../../lib/services/meal-plan.service";
 
 /**
  * GET /api/meal-plans/{planId}
@@ -40,21 +37,14 @@ export const GET: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Get meal plan details
-    const mealPlan = await getMealPlanDetails(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const mealPlan = await getMealPlanDetails(supabase, user.id, validationResult.data);
 
     if (!mealPlan) {
       return new Response(JSON.stringify({ error: "Meal plan not found" }), {
@@ -70,8 +60,7 @@ export const GET: APIRoute = async (context) => {
   } catch (error) {
     console.error("Error in get meal plan endpoint:", error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
 
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
@@ -104,21 +93,14 @@ export const DELETE: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Delete meal plan
-    const deleted = await deleteMealPlan(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const deleted = await deleteMealPlan(supabase, user.id, validationResult.data);
 
     if (!deleted) {
       return new Response(JSON.stringify({ error: "Meal plan not found" }), {
@@ -133,8 +115,7 @@ export const DELETE: APIRoute = async (context) => {
   } catch (error) {
     console.error("Error in delete meal plan endpoint:", error);
 
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
 
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
@@ -142,4 +123,3 @@ export const DELETE: APIRoute = async (context) => {
     });
   }
 };
-

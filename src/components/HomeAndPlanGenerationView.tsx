@@ -55,9 +55,7 @@ export function HomeAndPlanGenerationView() {
             <ChefHat className="size-10 text-primary" />
             <h1 className="text-4xl font-bold">Planer Posiłków</h1>
           </div>
-          <p className="text-muted-foreground text-lg">
-            Wygeneruj spersonalizowany plan posiłków z pomocą AI
-          </p>
+          <p className="text-muted-foreground text-lg">Wygeneruj spersonalizowany plan posiłków z pomocą AI</p>
         </header>
 
         {/* Main Content */}
@@ -71,11 +69,7 @@ export function HomeAndPlanGenerationView() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <PlanGenerationForm
-                form={form}
-                onSubmit={onSubmit}
-                isLoading={isLoading}
-              />
+              <PlanGenerationForm form={form} onSubmit={onSubmit} isLoading={isLoading} />
             </CardContent>
           </Card>
 
@@ -84,12 +78,7 @@ export function HomeAndPlanGenerationView() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Twój Plan Posiłków</h2>
-                <Button
-                  onClick={onSavePlan}
-                  disabled={isLoading}
-                  size="lg"
-                  className="gap-2"
-                >
+                <Button onClick={onSavePlan} disabled={isLoading} size="lg" className="gap-2">
                   <Save />
                   {isLoading ? "Zapisywanie..." : "Zapisz plan"}
                 </Button>
@@ -113,13 +102,10 @@ export function HomeAndPlanGenerationView() {
             <Card className="border-dashed border-2">
               <CardContent className="py-12 text-center">
                 <ChefHat className="size-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">
-                  Zacznij planować posiłki
-                </h3>
+                <h3 className="text-xl font-semibold mb-2">Zacznij planować posiłki</h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Wypełnij formularz powyżej i kliknij "Generuj plan posiłków",
-                  aby stworzyć spersonalizowany plan żywieniowy dostosowany do
-                  Twoich potrzeb.
+                  Wypełnij formularz powyżej i kliknij "Generuj plan posiłków", aby stworzyć spersonalizowany plan
+                  żywieniowy dostosowany do Twoich potrzeb.
                 </p>
               </CardContent>
             </Card>
@@ -132,12 +118,9 @@ export function HomeAndPlanGenerationView() {
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent" />
                   <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">
-                      Generowanie planu...
-                    </h3>
+                    <h3 className="text-xl font-semibold">Generowanie planu...</h3>
                     <p className="text-muted-foreground">
-                      AI tworzy dla Ciebie spersonalizowany plan posiłków. To
-                      może potrwać kilka chwil.
+                      AI tworzy dla Ciebie spersonalizowany plan posiłków. To może potrwać kilka chwil.
                     </p>
                   </div>
                 </div>
@@ -152,4 +135,3 @@ export function HomeAndPlanGenerationView() {
     </div>
   );
 }
-

@@ -6,11 +6,13 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { KeyRound, Lock, AlertCircle, CheckCircle } from "lucide-react";
-import {
-  resetPasswordSchema,
-  type ResetPasswordFormData,
-} from "../../lib/validation/auth.schemas";
+import { resetPasswordSchema, type ResetPasswordFormData } from "../../lib/validation/auth.schemas";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
+
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 export function ResetPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,11 +50,11 @@ export function ResetPasswordForm() {
         }),
       });
 
+      const responseData: ErrorResponse = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Nie udało się zresetować hasła"
-        );
+        // Use the error message from the backend (already translated by auth-error.service)
+        throw new Error(responseData.message || "Nie udało się zresetować hasła");
       }
 
       setSuccess(true);
@@ -100,9 +102,7 @@ export function ResetPasswordForm() {
             {!success && (
               <>
                 {/* Instructions */}
-                <p className="text-sm text-muted-foreground">
-                  Wprowadź nowe hasło dla swojego konta.
-                </p>
+                <p className="text-sm text-muted-foreground">Wprowadź nowe hasło dla swojego konta.</p>
 
                 {/* Password Field */}
                 <div className="space-y-2">
@@ -118,20 +118,13 @@ export function ResetPasswordForm() {
                     aria-invalid={!!errors.password}
                     disabled={isLoading}
                   />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">
-                      {errors.password.message}
-                    </p>
-                  )}
+                  {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
                   <PasswordStrengthIndicator password={password} />
                 </div>
 
                 {/* Confirm Password Field */}
                 <div className="space-y-2">
-                  <Label
-                    htmlFor="confirmPassword"
-                    className="flex items-center gap-2"
-                  >
+                  <Label htmlFor="confirmPassword" className="flex items-center gap-2">
                     <Lock className="size-4" />
                     Potwierdź nowe hasło
                   </Label>
@@ -144,9 +137,7 @@ export function ResetPasswordForm() {
                     disabled={isLoading}
                   />
                   {errors.confirmPassword && (
-                    <p className="text-sm text-destructive">
-                      {errors.confirmPassword.message}
-                    </p>
+                    <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
                   )}
                 </div>
 
@@ -169,4 +160,3 @@ export function ResetPasswordForm() {
     </div>
   );
 }
-

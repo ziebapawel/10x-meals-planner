@@ -6,10 +6,12 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { LogIn, Mail, Lock, AlertCircle } from "lucide-react";
-import {
-  loginSchema,
-  type LoginFormData,
-} from "../../lib/validation/auth.schemas";
+import { loginSchema, type LoginFormData } from "../../lib/validation/auth.schemas";
+
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,9 +42,11 @@ export function LoginForm() {
         body: JSON.stringify(data),
       });
 
+      const responseData: ErrorResponse = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Nieprawidłowy email lub hasło");
+        // Use the error message from the backend (already translated by auth-error.service)
+        throw new Error(responseData.message || "Nieprawidłowy email lub hasło");
       }
 
       // Redirect to homepage on success
@@ -87,11 +91,7 @@ export function LoginForm() {
                 aria-invalid={!!errors.email}
                 disabled={isLoading}
               />
-              {errors.email && (
-                <p className="text-sm text-destructive">
-                  {errors.email.message}
-                </p>
-              )}
+              {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
             {/* Password Field */}
@@ -108,19 +108,12 @@ export function LoginForm() {
                 aria-invalid={!!errors.password}
                 disabled={isLoading}
               />
-              {errors.password && (
-                <p className="text-sm text-destructive">
-                  {errors.password.message}
-                </p>
-              )}
+              {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
 
             {/* Forgot Password Link */}
             <div className="flex justify-end">
-              <a
-                href="/forgot-password"
-                className="text-sm text-primary hover:underline"
-              >
+              <a href="/forgot-password" className="text-sm text-primary hover:underline">
                 Zapomniałeś hasła?
               </a>
             </div>
@@ -143,4 +136,3 @@ export function LoginForm() {
     </div>
   );
 }
-

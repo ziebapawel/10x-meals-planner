@@ -1,9 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import type { RecipeDto } from "../types";
 
 interface RecipeDetailModalProps {
@@ -11,10 +6,7 @@ interface RecipeDetailModalProps {
   onClose: () => void;
 }
 
-export function RecipeDetailModal({
-  recipe,
-  onClose,
-}: RecipeDetailModalProps) {
+export function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
   if (!recipe) return null;
 
   return (
@@ -31,10 +23,7 @@ export function RecipeDetailModal({
               <h3 className="text-lg font-semibold mb-2">Porcje</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {recipe.portions.map((portion) => (
-                  <div
-                    key={portion.person}
-                    className="bg-secondary px-3 py-2 rounded-md text-sm"
-                  >
+                  <div key={portion.person} className="bg-secondary px-3 py-2 rounded-md text-sm">
                     Osoba {portion.person}: {portion.grams}g
                   </div>
                 ))}
@@ -47,15 +36,10 @@ export function RecipeDetailModal({
             <h3 className="text-lg font-semibold mb-3">Składniki</h3>
             <ul className="space-y-2">
               {recipe.ingredients.map((ingredient, index) => (
-                <li
-                  key={index}
-                  className="flex items-start gap-3 text-sm border-b border-border pb-2 last:border-0"
-                >
+                <li key={index} className="flex items-start gap-3 text-sm border-b border-border pb-2 last:border-0">
                   <span className="text-muted-foreground shrink-0">•</span>
                   <span className="flex-1">{ingredient.item}</span>
-                  <span className="text-muted-foreground shrink-0 font-medium">
-                    {ingredient.quantity}
-                  </span>
+                  <span className="text-muted-foreground shrink-0 font-medium">{ingredient.quantity}</span>
                 </li>
               ))}
             </ul>
@@ -63,18 +47,14 @@ export function RecipeDetailModal({
 
           {/* Instructions */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">
-              Instrukcje przygotowania
-            </h3>
+            <h3 className="text-lg font-semibold mb-3">Instrukcje przygotowania</h3>
             <ol className="space-y-3">
               {recipe.instructions.map((instruction, index) => (
                 <li key={index} className="flex gap-3">
                   <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-semibold shrink-0">
                     {index + 1}
                   </span>
-                  <p className="flex-1 pt-0.5 text-sm leading-relaxed">
-                    {instruction}
-                  </p>
+                  <p className="flex-1 pt-0.5 text-sm leading-relaxed">{instruction}</p>
                 </li>
               ))}
             </ol>
@@ -84,4 +64,3 @@ export function RecipeDetailModal({
     </Dialog>
   );
 }
-

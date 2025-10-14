@@ -31,21 +31,14 @@ export const POST: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Generate shopping list
-    const shoppingList = await generateShoppingList(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const shoppingList = await generateShoppingList(supabase, user.id, validationResult.data);
 
     return new Response(JSON.stringify(shoppingList), {
       status: 201,
@@ -89,4 +82,3 @@ export const POST: APIRoute = async (context) => {
     });
   }
 };
-

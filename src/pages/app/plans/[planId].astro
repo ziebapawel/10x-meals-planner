@@ -1,0 +1,25 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { MealPlanDetailView } from "../../../components/MealPlanDetailView";
+import { Toaster } from "../../../components/ui/sonner";
+
+// Get user from Astro.locals (set by middleware)
+const user = Astro.locals.user;
+
+// Redirect to login if not authenticated
+if (!user) {
+  return Astro.redirect("/login");
+}
+
+// Get planId from URL params
+const { planId } = Astro.params;
+
+if (!planId) {
+  return Astro.redirect("/app");
+}
+---
+
+<Layout title={`Plan Posiłków - ${planId}`}>
+  <MealPlanDetailView planId={planId} client:load />
+  <Toaster client:load />
+</Layout>

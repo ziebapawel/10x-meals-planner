@@ -6,10 +6,12 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { KeyRound, Mail, AlertCircle, CheckCircle, ArrowLeft } from "lucide-react";
-import {
-  forgotPasswordSchema,
-  type ForgotPasswordFormData,
-} from "../../lib/validation/auth.schemas";
+import { forgotPasswordSchema, type ForgotPasswordFormData } from "../../lib/validation/auth.schemas";
+
+interface ErrorResponse {
+  error?: string;
+  message?: string;
+}
 
 export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,11 +43,11 @@ export function ForgotPasswordForm() {
         body: JSON.stringify(data),
       });
 
+      const responseData: ErrorResponse = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Nie udało się wysłać emaila"
-        );
+        // Use the error message from the backend (already translated by auth-error.service)
+        throw new Error(responseData.message || "Nie udało się wysłać emaila");
       }
 
       setSuccess(true);
@@ -78,8 +80,7 @@ export function ForgotPasswordForm() {
 
               {/* Instructions */}
               <p className="text-sm text-muted-foreground">
-                Podaj adres email powiązany z Twoim kontem, a wyślemy Ci link
-                do resetowania hasła.
+                Podaj adres email powiązany z Twoim kontem, a wyślemy Ci link do resetowania hasła.
               </p>
 
               {/* Email Field */}
@@ -96,11 +97,7 @@ export function ForgotPasswordForm() {
                   aria-invalid={!!errors.email}
                   disabled={isLoading}
                 />
-                {errors.email && (
-                  <p className="text-sm text-destructive">
-                    {errors.email.message}
-                  </p>
-                )}
+                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
               </div>
 
               {/* Submit Button */}
@@ -110,10 +107,7 @@ export function ForgotPasswordForm() {
 
               {/* Back to Login Link */}
               <div className="text-center">
-                <a
-                  href="/login"
-                  className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-                >
+                <a href="/login" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
                   <ArrowLeft className="size-4" />
                   Wróć do logowania
                 </a>
@@ -125,12 +119,9 @@ export function ForgotPasswordForm() {
               <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-md p-4 flex items-start gap-3">
                 <CheckCircle className="size-6 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                    Email został wysłany!
-                  </p>
+                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Email został wysłany!</p>
                   <p className="text-sm text-green-600/80 dark:text-green-400/80">
-                    Sprawdź swoją skrzynkę odbiorczą i kliknij w link, aby
-                    zresetować hasło.
+                    Sprawdź swoją skrzynkę odbiorczą i kliknij w link, aby zresetować hasło.
                   </p>
                 </div>
               </div>
@@ -146,11 +137,7 @@ export function ForgotPasswordForm() {
               </div>
 
               {/* Back to Login Button */}
-              <Button
-                onClick={() => (window.location.href = "/login")}
-                variant="outline"
-                className="w-full"
-              >
+              <Button onClick={() => (window.location.href = "/login")} variant="outline" className="w-full">
                 <ArrowLeft className="size-4" />
                 Wróć do logowania
               </Button>
@@ -161,4 +148,3 @@ export function ForgotPasswordForm() {
     </div>
   );
 }
-
