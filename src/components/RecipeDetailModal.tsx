@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Utensils, Flame } from "lucide-react";
 import type { RecipeDto } from "../types";
 
 interface RecipeDetailModalProps {
@@ -6,25 +7,30 @@ interface RecipeDetailModalProps {
   onClose: () => void;
 }
 
+
 export function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
   if (!recipe) return null;
 
   return (
     <Dialog open={!!recipe} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto sm:max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">{recipe.name}</DialogTitle>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-6">
+          <DialogTitle className="text-3xl font-bold">{recipe.name}</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Portions */}
           {recipe.portions && recipe.portions.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold mb-2">Porcje</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Utensils className="w-5 h-5 text-primary" />
+                Porcje
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {recipe.portions.map((portion) => (
-                  <div key={portion.person} className="bg-secondary px-3 py-2 rounded-md text-sm">
-                    Osoba {portion.person}: {portion.grams}g
+                  <div key={portion.person} className="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 px-4 py-3 rounded-lg text-center">
+                    <div className="text-sm font-medium text-orange-800">Osoba {portion.person}</div>
+                    <div className="text-lg font-bold text-orange-900">{portion.grams}g</div>
                   </div>
                 ))}
               </div>
@@ -33,13 +39,14 @@ export function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
 
           {/* Ingredients */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Składniki</h3>
+            <h3 className="text-xl font-bold mb-4">Składniki</h3>
             <ul className="space-y-2">
               {recipe.ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-start gap-3 text-sm border-b border-border pb-2 last:border-0">
-                  <span className="text-muted-foreground shrink-0">•</span>
-                  <span className="flex-1">{ingredient.item}</span>
-                  <span className="text-muted-foreground shrink-0 font-medium">{ingredient.quantity}</span>
+                <li key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <span className="font-medium text-gray-900">{ingredient.item}</span>
+                  <span className="text-sm font-semibold text-gray-600 bg-white px-2 py-1 rounded border">
+                    {ingredient.quantity}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -47,17 +54,20 @@ export function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
 
           {/* Instructions */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Instrukcje przygotowania</h3>
-            <ol className="space-y-3">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Flame className="w-5 h-5 text-primary" />
+              Instrukcje przygotowania
+            </h3>
+            <div className="space-y-4">
               {recipe.instructions.map((instruction, index) => (
-                <li key={index} className="flex gap-3">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-sm font-semibold shrink-0">
+                <div key={index} className="flex gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
                     {index + 1}
-                  </span>
-                  <p className="flex-1 pt-0.5 text-sm leading-relaxed">{instruction}</p>
-                </li>
+                  </div>
+                  <p className="flex-1 text-gray-800 leading-relaxed pt-1">{instruction}</p>
+                </div>
               ))}
-            </ol>
+            </div>
           </div>
         </div>
       </DialogContent>

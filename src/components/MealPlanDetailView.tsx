@@ -3,7 +3,18 @@ import { MealPlanGrid } from "./MealPlanGrid";
 import { RecipeDetailModal } from "./RecipeDetailModal";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Users,
+  ChefHat,
+  ShoppingCart,
+  Trash2,
+  CheckCircle,
+  Circle,
+  Package,
+  List,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { MealPlanDetailsDto, RecipeDto, GenerateMealPlanCommand } from "../types";
 
@@ -17,6 +28,68 @@ interface MealPlanState {
   error: string | null;
 }
 
+// Helper function to get category emoji
+const getCategoryEmoji = (category: string): string => {
+  const categoryEmojis: Record<string, string> = {
+    warzywa: "🥬",
+    owoce: "🍎",
+    mięso: "🥩",
+    nabiał: "🥛",
+    pieczywo: "🍞",
+    przyprawy: "🧂",
+    konserwy: "🥫",
+    mrożonki: "🧊",
+    słodycze: "🍫",
+    napoje: "🥤",
+    alkohol: "🍷",
+    makarony: "🍝",
+    ryż: "🍚",
+    kasze: "🌾",
+    orzechy: "🥜",
+    nasiona: "🌰",
+    oleje: "🫒",
+    sosy: "🍯",
+    mąka: "🌾",
+    cukier: "🍯",
+    sól: "🧂",
+    pieprz: "🌶️",
+    czosnek: "🧄",
+    cebula: "🧅",
+  };
+
+  const lowerCategory = category.toLowerCase();
+  for (const [key, emoji] of Object.entries(categoryEmojis)) {
+    if (lowerCategory.includes(key)) {
+      return emoji;
+    }
+  }
+  return "📦";
+};
+
+// Helper function to get category color
+const getCategoryColor = (category: string): string => {
+  const categoryColors: Record<string, string> = {
+    warzywa: "bg-green-50 border-green-200 text-green-800",
+    owoce: "bg-red-50 border-red-200 text-red-800",
+    mięso: "bg-pink-50 border-pink-200 text-pink-800",
+    nabiał: "bg-blue-50 border-blue-200 text-blue-800",
+    pieczywo: "bg-yellow-50 border-yellow-200 text-yellow-800",
+    przyprawy: "bg-orange-50 border-orange-200 text-orange-800",
+    konserwy: "bg-gray-50 border-gray-200 text-gray-800",
+    mrożonki: "bg-cyan-50 border-cyan-200 text-cyan-800",
+    słodycze: "bg-purple-50 border-purple-200 text-purple-800",
+    napoje: "bg-indigo-50 border-indigo-200 text-indigo-800",
+  };
+
+  const lowerCategory = category.toLowerCase();
+  for (const [key, color] of Object.entries(categoryColors)) {
+    if (lowerCategory.includes(key)) {
+      return color;
+    }
+  }
+  return "bg-gray-50 border-gray-200 text-gray-800";
+};
+
 export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   const [state, setState] = useState<MealPlanState>({
     data: null,
@@ -26,6 +99,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGeneratingShoppingList, setIsGeneratingShoppingList] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
   // Fetch meal plan details
   useEffect(() => {
@@ -97,6 +171,19 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   // Handle back navigation
   const handleBack = () => {
     window.location.href = "/";
+  };
+
+  // Handle shopping list item toggle
+  const handleItemToggle = (itemKey: string) => {
+    setCheckedItems((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemKey)) {
+        newSet.delete(itemKey);
+      } else {
+        newSet.add(itemKey);
+      }
+      return newSet;
+    });
   };
 
   // Handle shopping list generation
@@ -309,32 +396,116 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
         {/* Shopping List */}
         {plan.shoppingList && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
+          <Card className="border-2 border-primary/20">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
+              <CardTitle className="flex items-center gap-3 text-2xl">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <ShoppingCart className="w-6 h-6 text-primary" />
+                </div>
                 Lista zakupów
+                <div className="ml-auto flex items-center gap-2 text-sm font-normal text-muted-foreground">
+                  <Package className="w-4 h-4" />
+                  <span>
+                    {
+                      Object.values(
+                        ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
+                      ).flat().length
+                    }{" "}
+                    produktów
+                  </span>
+                </div>
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="p-6">
+              <div className="space-y-6">
                 {Object.entries(
                   ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
-                ).map(([category, items]) => (
-                  <div key={category}>
-                    <h4 className="font-semibold text-lg mb-2 capitalize">{category}</h4>
-                    <ul className="space-y-1">
-                      {(items as Record<string, unknown>[]).map((item: Record<string, unknown>, index: number) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <span className="w-2 h-2 bg-primary rounded-full"></span>
-                          <span>
-                            {item.item as string} - {item.quantity as string}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                ).map(([category, items]) => {
+                  const categoryEmoji = getCategoryEmoji(category);
+                  const categoryColor = getCategoryColor(category);
+                  const categoryItems = items as Record<string, unknown>[];
+
+                  return (
+                    <div key={category} className="space-y-3">
+                      {/* Category Header */}
+                      <div className={`flex items-center gap-3 p-3 rounded-lg border ${categoryColor}`}>
+                        <span className="text-2xl">{categoryEmoji}</span>
+                        <h4 className="font-bold text-lg capitalize">{category}</h4>
+                        <div className="ml-auto flex items-center gap-2 text-sm">
+                          <List className="w-4 h-4" />
+                          <span>{categoryItems.length} produktów</span>
+                        </div>
+                      </div>
+
+                      {/* Items Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-6">
+                        {categoryItems.map((item: Record<string, unknown>, index: number) => {
+                          const itemKey = `${category}-${index}`;
+                          const isChecked = checkedItems.has(itemKey);
+
+                          return (
+                            <div
+                              key={index}
+                              className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
+                                isChecked
+                                  ? "bg-green-50 border-green-300 text-green-800"
+                                  : "bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                              }`}
+                              onClick={() => handleItemToggle(itemKey)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  handleItemToggle(itemKey);
+                                }
+                              }}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`${isChecked ? "Odznacz" : "Zaznacz"} ${item.item as string}`}
+                            >
+                              <div className="flex items-center justify-center w-5 h-5">
+                                {isChecked ? (
+                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                ) : (
+                                  <Circle className="w-5 h-5 text-gray-400" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div
+                                  className={`font-medium ${
+                                    isChecked ? "line-through text-green-600" : "text-gray-900"
+                                  }`}
+                                >
+                                  {item.item as string}
+                                </div>
+                                <div className="text-sm text-gray-500">{item.quantity as string}</div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Shopping List Summary */}
+                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ShoppingCart className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold text-blue-800">Podsumowanie zakupów</span>
+                    </div>
+                    <div className="text-sm text-blue-600">
+                      {checkedItems.size} z{" "}
+                      {
+                        Object.values(
+                          ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) ||
+                            {}
+                        ).flat().length
+                      }{" "}
+                      produktów zaznaczonych
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
             </CardContent>
           </Card>
