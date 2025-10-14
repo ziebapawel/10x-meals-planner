@@ -61,7 +61,7 @@ export function RegisterForm() {
 
       setSuccess(true);
 
-      // Redirect to homepage after successful registration
+      // Redirect to homepage (meal plans list) after successful registration
       setTimeout(() => {
         window.location.href = "/";
       }, 2000);

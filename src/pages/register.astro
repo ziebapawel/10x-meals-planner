@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { RegisterForm } from "../components/auth";
 
-// Redirect authenticated users to homepage
+// Redirect authenticated users to homepage (meal plans list)
 // This is handled by middleware, but we keep this as a fallback
 if (Astro.locals.user) {
   return Astro.redirect("/");

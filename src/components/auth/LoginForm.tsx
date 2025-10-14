@@ -49,7 +49,7 @@ export function LoginForm() {
         throw new Error(responseData.message || "Nieprawidłowy email lub hasło");
       }
 
-      // Redirect to homepage on success
+      // Redirect to homepage (meal plans list) on success
       window.location.href = "/";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Wystąpił błąd");

@@ -1,24 +1,28 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import LandingView from "../components/LandingView.astro";
-import { HomeAndPlanGenerationView } from "../components/HomeAndPlanGenerationView";
+import { MealPlanHistoryView } from "../components/MealPlanHistoryView";
 import { Toaster } from "../components/ui/sonner";
 
 // Get user from Astro.locals (set by middleware)
 const user = Astro.locals.user;
 ---
 
-<Layout title={user ? "Planer Posiłków - Generuj swój plan żywieniowy" : "Planer Posiłków - Inteligentne planowanie posiłków z AI"}>
-  {user ? (
-    <>
-      {/* Authenticated users - show the meal plan generator */}
-      <HomeAndPlanGenerationView client:load />
-      <Toaster client:load />
-    </>
-  ) : (
-    <>
-      {/* Unauthenticated users - show the landing page */}
-      <LandingView />
-    </>
-  )}
+<Layout
+  title={user ? "Moje Plany Posiłków - Planer Posiłków" : "Planer Posiłków - Inteligentne planowanie posiłków z AI"}
+>
+  {
+    user ? (
+      <>
+        {/* Authenticated users - show the meal plans list */}
+        <MealPlanHistoryView client:load />
+        <Toaster client:load />
+      </>
+    ) : (
+      <>
+        {/* Unauthenticated users - show the landing page */}
+        <LandingView />
+      </>
+    )
+  }
 </Layout>

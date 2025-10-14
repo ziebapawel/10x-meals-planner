@@ -46,12 +46,12 @@ export function MealPlanHistoryView() {
 
   // Handle plan click
   const handlePlanClick = (planId: string) => {
-    window.location.href = `/app/plans/${planId}`;
+    window.location.href = `/plans/${planId}`;
   };
 
   // Handle create new plan
   const handleCreateNew = () => {
-    window.location.href = "/";
+    window.location.href = "/generate";
   };
 
   // Handle page change
