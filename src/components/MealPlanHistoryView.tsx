@@ -38,19 +38,6 @@ const calculateTotalCalories = (planInput: GenerateMealPlanCommand): number => {
   return planInput.calorieTargets.reduce((total, target) => total + target.calories, 0);
 };
 
-// Helper function to get difficulty level based on ingredients
-const getDifficultyLevel = (planInput: GenerateMealPlanCommand): { level: string; color: string; icon: string } => {
-  const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
-  const excludedCount = planInput.excludedIngredients.length;
-  
-  if (excludedCount > 5 || totalMeals > 15) {
-    return { level: 'Zaawansowany', color: 'text-red-600 bg-red-50', icon: '🔥' };
-  } else if (excludedCount > 2 || totalMeals > 10) {
-    return { level: 'Średni', color: 'text-yellow-600 bg-yellow-50', icon: '⚡' };
-  } else {
-    return { level: 'Łatwy', color: 'text-green-600 bg-green-50', icon: '⭐' };
-  }
-};
 
 export function MealPlanHistoryView() {
   const [state, setState] = useState<MealPlanHistoryState>({
@@ -181,7 +168,6 @@ export function MealPlanHistoryView() {
           {plans.map((plan) => {
             const planInput = plan.plan_input as GenerateMealPlanCommand;
             const totalCalories = calculateTotalCalories(planInput);
-            const difficulty = getDifficultyLevel(planInput);
             const cuisineEmoji = getCuisineEmoji(planInput.cuisine);
             const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
             
@@ -250,13 +236,6 @@ export function MealPlanHistoryView() {
                     </div>
                   </div>
 
-                  {/* Difficulty Badge */}
-                  <div className="flex items-center justify-center">
-                    <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${difficulty.color}`}>
-                      <span>{difficulty.icon}</span>
-                      <span>{difficulty.level}</span>
-                    </div>
-                  </div>
 
                   {/* Meal Types */}
                   <div className="space-y-2">

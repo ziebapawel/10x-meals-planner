@@ -3,18 +3,7 @@ import { MealPlanGrid } from "./MealPlanGrid";
 import { RecipeDetailModal } from "./RecipeDetailModal";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import {
-  ArrowLeft,
-  Calendar,
-  Users,
-  ChefHat,
-  ShoppingCart,
-  Trash2,
-  CheckCircle,
-  Circle,
-  Package,
-  List,
-} from "lucide-react";
+import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2, Package, List } from "lucide-react";
 import { toast } from "sonner";
 import type { MealPlanDetailsDto, RecipeDto, GenerateMealPlanCommand } from "../types";
 
@@ -99,7 +88,6 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isGeneratingShoppingList, setIsGeneratingShoppingList] = useState(false);
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
 
   // Fetch meal plan details
   useEffect(() => {
@@ -171,19 +159,6 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   // Handle back navigation
   const handleBack = () => {
     window.location.href = "/";
-  };
-
-  // Handle shopping list item toggle
-  const handleItemToggle = (itemKey: string) => {
-    setCheckedItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemKey)) {
-        newSet.delete(itemKey);
-      } else {
-        newSet.add(itemKey);
-      }
-      return newSet;
-    });
   };
 
   // Handle shopping list generation
@@ -416,8 +391,8 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
                 </div>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
+            <CardContent className="p-4">
+              <div className="space-y-4">
                 {Object.entries(
                   ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
                 ).map(([category, items]) => {
@@ -426,86 +401,36 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
                   const categoryItems = items as Record<string, unknown>[];
 
                   return (
-                    <div key={category} className="space-y-3">
+                    <div key={category} className="space-y-2">
                       {/* Category Header */}
-                      <div className={`flex items-center gap-3 p-3 rounded-lg border ${categoryColor}`}>
-                        <span className="text-2xl">{categoryEmoji}</span>
-                        <h4 className="font-bold text-lg capitalize">{category}</h4>
-                        <div className="ml-auto flex items-center gap-2 text-sm">
-                          <List className="w-4 h-4" />
-                          <span>{categoryItems.length} produktów</span>
+                      <div className={`flex items-center gap-2 px-3 py-2 rounded-md border ${categoryColor}`}>
+                        <span className="text-lg">{categoryEmoji}</span>
+                        <h4 className="font-semibold text-base capitalize">{category}</h4>
+                        <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+                          <List className="w-3 h-3" />
+                          <span>{categoryItems.length}</span>
                         </div>
                       </div>
 
-                      {/* Items Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 ml-6">
-                        {categoryItems.map((item: Record<string, unknown>, index: number) => {
-                          const itemKey = `${category}-${index}`;
-                          const isChecked = checkedItems.has(itemKey);
-
-                          return (
-                            <div
-                              key={index}
-                              className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer ${
-                                isChecked
-                                  ? "bg-green-50 border-green-300 text-green-800"
-                                  : "bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                              }`}
-                              onClick={() => handleItemToggle(itemKey)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  handleItemToggle(itemKey);
-                                }
-                              }}
-                              role="button"
-                              tabIndex={0}
-                              aria-label={`${isChecked ? "Odznacz" : "Zaznacz"} ${item.item as string}`}
-                            >
-                              <div className="flex items-center justify-center w-5 h-5">
-                                {isChecked ? (
-                                  <CheckCircle className="w-5 h-5 text-green-600" />
-                                ) : (
-                                  <Circle className="w-5 h-5 text-gray-400" />
-                                )}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div
-                                  className={`font-medium ${
-                                    isChecked ? "line-through text-green-600" : "text-gray-900"
-                                  }`}
-                                >
-                                  {item.item as string}
-                                </div>
-                                <div className="text-sm text-gray-500">{item.quantity as string}</div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      {/* Items List - Grid Layout */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ml-4">
+                        {categoryItems.map((item: Record<string, unknown>, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 hover:border-gray-200 transition-colors"
+                          >
+                            <span className="font-medium text-sm text-gray-900 truncate pr-2">
+                              {item.item as string}
+                            </span>
+                            <span className="text-xs font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded flex-shrink-0">
+                              {item.quantity as string}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   );
                 })}
-
-                {/* Shopping List Summary */}
-                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <ShoppingCart className="w-5 h-5 text-blue-600" />
-                      <span className="font-semibold text-blue-800">Podsumowanie zakupów</span>
-                    </div>
-                    <div className="text-sm text-blue-600">
-                      {checkedItems.size} z{" "}
-                      {
-                        Object.values(
-                          ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) ||
-                            {}
-                        ).flat().length
-                      }{" "}
-                      produktów zaznaczonych
-                    </div>
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>

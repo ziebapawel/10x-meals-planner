@@ -37,7 +37,7 @@ export async function generateMealPlan(command: GenerateMealPlanCommand): Promis
         messages: [
           {
             role: "system",
-            content: "You are a professional meal planner and nutritionist.",
+            content: "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
           },
           {
             role: "user",
@@ -87,7 +87,7 @@ export async function regenerateSingleMeal(command: RegenerateMealCommand): Prom
         messages: [
           {
             role: "system",
-            content: "You are a professional meal planner and nutritionist.",
+            content: "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
           },
           {
             role: "user",
@@ -132,7 +132,7 @@ export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingL
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant that creates organized shopping lists.",
+            content: "Jesteś pomocnym asystentem tworzącym zorganizowane listy zakupów. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy kategorii i składników muszą być w języku polskim.",
           },
           {
             role: "user",
@@ -163,15 +163,15 @@ export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingL
  * Helper function to build meal plan generation prompt
  */
 function buildMealPlanPrompt(command: GenerateMealPlanCommand): string {
-  return `Generate a meal plan with the following requirements:
-- Number of people: ${command.peopleCount}
-- Number of days: ${command.daysCount}
-- Cuisine type: ${command.cuisine}
-- Excluded ingredients: ${command.excludedIngredients.join(", ") || "none"}
-- Calorie targets per person: ${JSON.stringify(command.calorieTargets)}
-- Meals to plan: ${command.mealsToPlan.join(", ")}
+  return `Wygeneruj plan posiłków z następującymi wymaganiami:
+- Liczba osób: ${command.peopleCount}
+- Liczba dni: ${command.daysCount}
+- Typ kuchni: ${command.cuisine}
+- Wykluczone składniki: ${command.excludedIngredients.join(", ") || "brak"}
+- Cele kaloryczne na osobę: ${JSON.stringify(command.calorieTargets)}
+- Posiłki do zaplanowania: ${command.mealsToPlan.join(", ")}
 
-Return a JSON object with the following structure:
+Zwróć obiekt JSON o następującej strukturze:
 {
   "plan": {
     "days": [
@@ -181,9 +181,9 @@ Return a JSON object with the following structure:
           {
             "type": "breakfast",
             "recipe": {
-              "name": "Recipe Name",
-              "ingredients": [{"item": "ingredient", "quantity": "amount"}],
-              "instructions": ["step 1", "step 2"],
+              "name": "Nazwa Przepisu",
+              "ingredients": [{"item": "składnik", "quantity": "ilość"}],
+              "instructions": ["krok 1", "krok 2"],
               "portions": [{"person": 1, "grams": 250}]
             }
           }
@@ -193,42 +193,45 @@ Return a JSON object with the following structure:
   }
 }
 
-Ensure:
-1. Each meal matches the calorie target for each person
-2. Portion sizes are specified in grams for each person
-3. No excluded ingredients are used
-4. Recipes match the specified cuisine type`;
+Upewnij się, że:
+1. Każdy posiłek odpowiada celowi kalorycznemu dla każdej osoby
+2. Rozmiary porcji są podane w gramach dla każdej osoby
+3. Nie używasz wykluczonych składników
+4. Przepisy odpowiadają określonemu typowi kuchni
+5. Wszystkie nazwy przepisów, składników i instrukcje są w języku polskim`;
 }
 
 /**
  * Helper function to build meal regeneration prompt
  */
 function buildRegenerateMealPrompt(command: RegenerateMealCommand): string {
-  return `Regenerate a single meal with the following context:
-- Day: ${command.mealToRegenerate.day}
-- Meal type: ${command.mealToRegenerate.type}
-- Cuisine: ${command.planInput.cuisine}
-- Excluded ingredients: ${command.planInput.excludedIngredients.join(", ") || "none"}
-- Calorie targets: ${JSON.stringify(command.planInput.calorieTargets)}
-- Existing meals for this day: ${JSON.stringify(command.existingMealsForDay)}
+  return `Wygeneruj ponownie pojedynczy posiłek z następującym kontekstem:
+- Dzień: ${command.mealToRegenerate.day}
+- Typ posiłku: ${command.mealToRegenerate.type}
+- Kuchnia: ${command.planInput.cuisine}
+- Wykluczone składniki: ${command.planInput.excludedIngredients.join(", ") || "brak"}
+- Cele kaloryczne: ${JSON.stringify(command.planInput.calorieTargets)}
+- Istniejące posiłki na ten dzień: ${JSON.stringify(command.existingMealsForDay)}
 
-Generate a NEW recipe that:
-1. Is different from the existing meals
-2. Fits within the daily calorie distribution
-3. Matches the cuisine type
-4. Avoids excluded ingredients
+Wygeneruj NOWY przepis, który:
+1. Różni się od istniejących posiłków
+2. Mieści się w dziennym rozkładzie kalorii
+3. Odpowiada typowi kuchni
+4. Unika wykluczonych składników
 
-Return a JSON object with this structure:
+Zwróć obiekt JSON o tej strukturze:
 {
   "day": ${command.mealToRegenerate.day},
   "type": "${command.mealToRegenerate.type}",
   "recipe": {
-    "name": "Recipe Name",
-    "ingredients": [{"item": "ingredient", "quantity": "amount"}],
-    "instructions": ["step 1", "step 2"],
+    "name": "Nazwa Przepisu",
+    "ingredients": [{"item": "składnik", "quantity": "ilość"}],
+    "instructions": ["krok 1", "krok 2"],
     "portions": [{"person": 1, "grams": 250}]
   }
-}`;
+}
+
+Upewnij się, że wszystkie nazwy przepisów, składników i instrukcje są w języku polskim.`;
 }
 
 /**
@@ -239,26 +242,28 @@ function buildShoppingListPrompt(meals: MealDto[]): string {
     meal.recipe_data.ingredients.map((ing) => `${ing.item}: ${ing.quantity}`)
   );
 
-  return `Create an organized shopping list from these ingredients:
+  return `Utwórz zorganizowaną listę zakupów z tych składników:
 ${allIngredients.join("\n")}
 
-Aggregate duplicate items and organize into categories like:
-- Vegetables
-- Fruits
-- Dairy
-- Meat & Fish
-- Grains & Pasta
-- Spices & Condiments
-- Other
+Pogrupuj duplikaty i zorganizuj w kategorie takie jak:
+- Warzywa
+- Owoce
+- Nabiał
+- Mięso i Ryby
+- Zboża i Makarony
+- Przyprawy i Sosy
+- Inne
 
-Return a JSON object where keys are category names and values are arrays of items:
+Zwróć obiekt JSON, gdzie klucze to nazwy kategorii, a wartości to tablice elementów:
 {
-  "Vegetables": [
-    {"item": "Onion", "quantity": "2 large"},
-    {"item": "Tomato", "quantity": "500g"}
+  "Warzywa": [
+    {"item": "Cebula", "quantity": "2 duże"},
+    {"item": "Pomidor", "quantity": "500g"}
   ],
-  "Dairy": [
-    {"item": "Milk", "quantity": "1 liter"}
+  "Nabiał": [
+    {"item": "Mleko", "quantity": "1 litr"}
   ]
-}`;
+}
+
+Upewnij się, że wszystkie nazwy kategorii i składników są w języku polskim.`;
 }

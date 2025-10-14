@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import type { MealInPlanDto, RecipeDto } from "../types";
-import { RefreshCw, ChefHat } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 interface MealCardProps {
   meal: MealInPlanDto;
@@ -57,15 +57,6 @@ export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegeneratin
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {/* Recipe Stats - Only ingredients count */}
-        <div className="bg-gray-50 rounded-lg p-3 text-center">
-          <div className="flex items-center justify-center gap-1 mb-1">
-            <ChefHat className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-800">{meal.recipe.ingredients.length}</span>
-          </div>
-          <p className="text-xs text-gray-600">składników</p>
-        </div>
-
         {/* Regenerate Button */}
         {showRegenerate && (
           <Button
