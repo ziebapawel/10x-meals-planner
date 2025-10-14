@@ -11,6 +11,12 @@ const PUBLIC_PATHS = [
   "/reset-password",
 ];
 
+// Protected paths that require authentication
+const PROTECTED_PATHS = [
+  "/generate",
+  "/plans",
+];
+
 const PUBLIC_API_PREFIXES = ["/api/auth/"];
 
 function isPublicPath(pathname: string): boolean {
@@ -21,6 +27,16 @@ function isPublicPath(pathname: string): boolean {
 
   // Check if path starts with any PUBLIC_API_PREFIXES
   return PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+function isProtectedPath(pathname: string): boolean {
+  // Check if path is in PROTECTED_PATHS
+  if (PROTECTED_PATHS.includes(pathname)) {
+    return true;
+  }
+
+  // Check if path starts with /plans/ (for plan details)
+  return pathname.startsWith("/plans/");
 }
 
 export const onRequest = defineMiddleware(async ({ locals, cookies, url, request, redirect }, next) => {
@@ -47,13 +63,13 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
       locals.user = null;
     }
 
-  // If user is authenticated and tries to access auth pages, redirect to home
+  // If user is authenticated and tries to access auth pages, redirect to homepage (meal plans list)
   if (user && ["/login", "/register"].includes(url.pathname)) {
     return redirect("/");
   }
 
   // If user is not authenticated and tries to access protected routes, redirect to login
-  if (!user && !isPublicPath(url.pathname)) {
+  if (!user && isProtectedPath(url.pathname)) {
     return redirect("/login");
   }
 

@@ -1,7 +1,7 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import { MealPlanDetailView } from "../../../components/MealPlanDetailView";
-import { Toaster } from "../../../components/ui/sonner";
+import Layout from "../../layouts/Layout.astro";
+import { MealPlanDetailView } from "../../components/MealPlanDetailView";
+import { Toaster } from "../../components/ui/sonner";
 
 // Get user from Astro.locals (set by middleware)
 const user = Astro.locals.user;
@@ -15,7 +15,7 @@ if (!user) {
 const { planId } = Astro.params;
 
 if (!planId) {
-  return Astro.redirect("/app");
+  return Astro.redirect("/");
 }
 ---
 

@@ -42,7 +42,7 @@ export function HomeAndPlanGenerationView() {
     if (planId) {
       toast.success("Plan został zapisany!");
       // Navigate to the plan details page
-      window.location.href = `/app/plans/${planId}`;
+      window.location.href = `/plans/${planId}`;
     }
   };
 

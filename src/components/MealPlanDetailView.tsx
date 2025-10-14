@@ -84,8 +84,8 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
       }
 
       toast.success("Plan posiłków został usunięty");
-      // Redirect to app dashboard
-      window.location.href = "/app";
+      // Redirect to homepage (meal plans list)
+      window.location.href = "/";
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Nieznany błąd";
       toast.error(errorMessage);
@@ -96,7 +96,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
   // Handle back navigation
   const handleBack = () => {
-    window.location.href = "/app";
+    window.location.href = "/";
   };
 
   // Handle shopping list generation
