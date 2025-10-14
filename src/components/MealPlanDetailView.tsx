@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import type { MealPlanDetailsDto, MealDto } from "../types";
+import type { MealPlanDetailsDto } from "../types";
 
 interface MealPlanDetailViewProps {
   planId: string;
@@ -23,17 +23,17 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
     loading: true,
     error: null,
   });
-  const [selectedRecipe, setSelectedRecipe] = useState<MealDto | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<unknown | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch meal plan details
   useEffect(() => {
     const fetchMealPlan = async () => {
       try {
-        setState(prev => ({ ...prev, loading: true, error: null }));
-        
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+
         const response = await fetch(`/api/meal-plans/${planId}`);
-        
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error("Plan posiłków nie został znaleziony");
@@ -43,7 +43,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
             throw new Error("Wystąpił błąd podczas ładowania planu");
           }
         }
-        
+
         const data: MealPlanDetailsDto = await response.json();
         setState({ data, loading: false, error: null });
       } catch (error) {
@@ -57,8 +57,8 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   }, [planId]);
 
   // Handle recipe view
-  const handleViewRecipe = (meal: MealDto) => {
-    setSelectedRecipe(meal);
+  const handleViewRecipe = (recipe: unknown) => {
+    setSelectedRecipe(recipe);
   };
 
   const handleCloseRecipe = () => {
@@ -73,15 +73,15 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
     try {
       setIsDeleting(true);
-      
+
       const response = await fetch(`/api/meal-plans/${planId}`, {
         method: "DELETE",
       });
-      
+
       if (!response.ok) {
         throw new Error("Wystąpił błąd podczas usuwania planu");
       }
-      
+
       toast.success("Plan posiłków został usunięty");
       // Redirect to app dashboard
       window.location.href = "/app";
@@ -125,9 +125,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Powrót
               </Button>
-              <Button onClick={() => window.location.reload()}>
-                Spróbuj ponownie
-              </Button>
+              <Button onClick={() => window.location.reload()}>Spróbuj ponownie</Button>
             </div>
           </CardContent>
         </Card>
@@ -144,9 +142,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
             <CardTitle>Plan nie znaleziony</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Nie udało się znaleźć planu posiłków o podanym ID.
-            </p>
+            <p className="text-muted-foreground mb-4">Nie udało się znaleźć planu posiłków o podanym ID.</p>
             <Button onClick={handleBack}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Powrót do listy planów
@@ -158,7 +154,41 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   }
 
   const { data: plan } = state;
-  const planInput = plan.plan_input;
+  const planInput = plan.plan_input as Record<string, unknown>;
+
+  // Transform MealPlanDetailsDto to GeneratedMealPlanDto format for MealPlanGrid
+  const transformPlanForGrid = (planDetails: MealPlanDetailsDto) => {
+    // Group meals by day
+    const mealsByDay = planDetails.meals.reduce(
+      (acc, meal) => {
+        if (!acc[meal.day]) {
+          acc[meal.day] = [];
+        }
+        acc[meal.day].push({
+          type: meal.type,
+          recipe: meal.recipe_data,
+        });
+        return acc;
+      },
+      {} as Record<number, { type: string; recipe: unknown }[]>
+    );
+
+    // Convert to the format expected by MealPlanGrid
+    const days = Object.entries(mealsByDay)
+      .sort(([a], [b]) => parseInt(a) - parseInt(b))
+      .map(([day, meals]) => ({
+        day: parseInt(day),
+        meals: meals.sort((a, b) => a.type.localeCompare(b.type)),
+      }));
+
+    return {
+      plan: {
+        days,
+      },
+    };
+  };
+
+  const gridPlan = transformPlanForGrid(plan);
 
   return (
     <div className="min-h-screen bg-background">
@@ -172,17 +202,10 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
             </Button>
             <div>
               <h1 className="text-3xl font-bold">Plan Posiłków</h1>
-              <p className="text-muted-foreground">
-                Utworzony {new Date(plan.created_at).toLocaleDateString("pl-PL")}
-              </p>
+              <p className="text-muted-foreground">Utworzony {new Date(plan.created_at).toLocaleDateString("pl-PL")}</p>
             </div>
           </div>
-          <Button 
-            onClick={handleDeletePlan} 
-            variant="destructive" 
-            size="sm"
-            disabled={isDeleting}
-          >
+          <Button onClick={handleDeletePlan} variant="destructive" size="sm" disabled={isDeleting}>
             <Trash2 className="w-4 h-4 mr-2" />
             {isDeleting ? "Usuwanie..." : "Usuń plan"}
           </Button>
@@ -201,29 +224,29 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Dni:</span>
-                <span className="font-medium">{planInput.days}</span>
+                <span className="font-medium">{planInput.daysCount as number}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">Osoby:</span>
-                <span className="font-medium">{planInput.people}</span>
+                <span className="font-medium">{planInput.peopleCount as number}</span>
               </div>
               <div className="flex items-center gap-2">
                 <ChefHat className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Dieta:</span>
-                <span className="font-medium">{planInput.diet || "Standardowa"}</span>
+                <span className="text-sm text-muted-foreground">Kuchnia:</span>
+                <span className="font-medium">{(planInput.cuisine as string) || "Standardowa"}</span>
               </div>
             </div>
-            {planInput.allergies && planInput.allergies.length > 0 && (
+            {planInput.excludedIngredients && (planInput.excludedIngredients as string[]).length > 0 && (
               <div className="mt-4">
-                <span className="text-sm text-muted-foreground">Alergie:</span>
-                <span className="ml-2 text-sm">{planInput.allergies.join(", ")}</span>
+                <span className="text-sm text-muted-foreground">Wykluczone składniki:</span>
+                <span className="ml-2 text-sm">{(planInput.excludedIngredients as string[]).join(", ")}</span>
               </div>
             )}
-            {planInput.preferences && planInput.preferences.length > 0 && (
+            {planInput.mealsToPlan && (planInput.mealsToPlan as string[]).length > 0 && (
               <div className="mt-2">
-                <span className="text-sm text-muted-foreground">Preferencje:</span>
-                <span className="ml-2 text-sm">{planInput.preferences.join(", ")}</span>
+                <span className="text-sm text-muted-foreground">Planowane posiłki:</span>
+                <span className="ml-2 text-sm">{(planInput.mealsToPlan as string[]).join(", ")}</span>
               </div>
             )}
           </CardContent>
@@ -232,11 +255,12 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
         {/* Meal Plan Grid */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-6">Plan posiłków</h2>
-          <MealPlanGrid 
-            plan={plan} 
+          <MealPlanGrid
+            plan={gridPlan}
             onRegenerate={() => {}} // No regeneration in detail view
             onViewDetails={handleViewRecipe}
             regeneratingMeal={null}
+            showRegenerate={false}
           />
         </div>
 
@@ -251,14 +275,18 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {Object.entries(plan.shoppingList.categories).map(([category, items]) => (
+                {Object.entries(
+                  ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
+                ).map(([category, items]) => (
                   <div key={category}>
                     <h4 className="font-semibold text-lg mb-2 capitalize">{category}</h4>
                     <ul className="space-y-1">
-                      {items.map((item, index) => (
+                      {(items as Record<string, unknown>[]).map((item: Record<string, unknown>, index: number) => (
                         <li key={index} className="flex items-center gap-2">
                           <span className="w-2 h-2 bg-primary rounded-full"></span>
-                          <span>{item}</span>
+                          <span>
+                            {item.item as string} - {item.quantity as string}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -271,12 +299,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
       </div>
 
       {/* Recipe Detail Modal */}
-      {selectedRecipe && (
-        <RecipeDetailModal 
-          recipe={selectedRecipe} 
-          onClose={handleCloseRecipe} 
-        />
-      )}
+      {selectedRecipe && <RecipeDetailModal recipe={selectedRecipe} onClose={handleCloseRecipe} />}
     </div>
   );
 }

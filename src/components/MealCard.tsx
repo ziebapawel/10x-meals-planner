@@ -9,9 +9,10 @@ interface MealCardProps {
   onRegenerate: (day: number, type: string) => void;
   onViewDetails: (recipe: RecipeDto) => void;
   isRegenerating: boolean;
+  showRegenerate?: boolean;
 }
 
-export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegenerating }: MealCardProps) {
+export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegenerating, showRegenerate = true }: MealCardProps) {
   return (
     <Card className="group hover:shadow-lg hover:scale-[1.02] transition-all cursor-pointer animate-fade-in">
       <CardHeader
@@ -34,31 +35,33 @@ export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegeneratin
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRegenerate(day, meal.type);
-          }}
-          disabled={isRegenerating}
-          className="w-full"
-          aria-label={`Regeneruj ${meal.type}`}
-        >
-          {isRegenerating ? (
-            <>
-              <RefreshCw className="animate-spin" />
-              Regenerowanie...
-            </>
-          ) : (
-            <>
-              <RefreshCw />
-              Regeneruj
-            </>
-          )}
-        </Button>
-      </CardContent>
+      {showRegenerate && (
+        <CardContent className="pt-0">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRegenerate(day, meal.type);
+            }}
+            disabled={isRegenerating}
+            className="w-full"
+            aria-label={`Regeneruj ${meal.type}`}
+          >
+            {isRegenerating ? (
+              <>
+                <RefreshCw className="animate-spin" />
+                Regenerowanie...
+              </>
+            ) : (
+              <>
+                <RefreshCw />
+                Regeneruj
+              </>
+            )}
+          </Button>
+        </CardContent>
+      )}
     </Card>
   );
 }
