@@ -47,7 +47,7 @@ export function HomeAndPlanGenerationView() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen gradient-warm">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <header className="mb-8 text-center">
@@ -61,7 +61,7 @@ export function HomeAndPlanGenerationView() {
         {/* Main Content */}
         <div className="space-y-8">
           {/* Generation Form */}
-          <Card>
+          <Card className="card-elevated">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="size-5 text-primary" />
@@ -84,7 +84,7 @@ export function HomeAndPlanGenerationView() {
                 </Button>
               </div>
 
-              <Card>
+              <Card className="card-elevated">
                 <CardContent className="pt-6">
                   <MealPlanGrid
                     plan={workingMealPlan}
@@ -99,7 +99,7 @@ export function HomeAndPlanGenerationView() {
 
           {/* Empty State */}
           {!workingMealPlan && !isLoading && (
-            <Card className="border-dashed border-2">
+            <Card className="border-dashed border-2 border-primary/30 card-elevated">
               <CardContent className="py-12 text-center">
                 <ChefHat className="size-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Zacznij planować posiłki</h3>
@@ -113,7 +113,7 @@ export function HomeAndPlanGenerationView() {
 
           {/* Loading State */}
           {isLoading && !workingMealPlan && (
-            <Card>
+            <Card className="card-elevated">
               <CardContent className="py-12 text-center">
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent" />

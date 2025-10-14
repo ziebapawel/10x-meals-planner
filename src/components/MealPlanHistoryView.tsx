@@ -174,7 +174,7 @@ export function MealPlanHistoryView() {
             return (
               <Card 
                 key={plan.id} 
-                className="cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group border-2 hover:border-primary/20"
+                className="cursor-pointer card-elevated group border-2 hover:border-primary/30 hover:scale-[1.02] transition-all duration-300"
                 onClick={() => handlePlanClick(plan.id)}
               >
                 <CardHeader className="pb-3">
@@ -198,20 +198,20 @@ export function MealPlanHistoryView() {
                 <CardContent className="space-y-4">
                   {/* Main Stats */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                    <div className="bg-orange-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
-                        <Calendar className="w-4 h-4 text-blue-600" />
-                        <span className="text-sm font-medium text-blue-800">{planInput.daysCount}</span>
+                        <Calendar className="w-4 h-4 text-orange-warm" />
+                        <span className="text-sm font-medium text-orange-warm">{planInput.daysCount}</span>
                       </div>
-                      <p className="text-xs text-blue-600">dni</p>
+                      <p className="text-xs text-orange-warm">dni</p>
                     </div>
                     
-                    <div className="bg-green-50 rounded-lg p-3 text-center">
+                    <div className="bg-green-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
-                        <Users className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">{planInput.peopleCount}</span>
+                        <Users className="w-4 h-4 text-green-fresh" />
+                        <span className="text-sm font-medium text-green-fresh">{planInput.peopleCount}</span>
                       </div>
-                      <p className="text-xs text-green-600">
+                      <p className="text-xs text-green-fresh">
                         {planInput.peopleCount === 1 ? 'osoba' : 'osób'}
                       </p>
                     </div>
@@ -219,20 +219,20 @@ export function MealPlanHistoryView() {
 
                   {/* Calories and Meals */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-orange-50 rounded-lg p-3 text-center">
+                    <div className="bg-orange-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
-                        <Flame className="w-4 h-4 text-orange-600" />
-                        <span className="text-sm font-medium text-orange-800">{totalCalories}</span>
+                        <Flame className="w-4 h-4 text-orange-warm" />
+                        <span className="text-sm font-medium text-orange-warm">{totalCalories}</span>
                       </div>
-                      <p className="text-xs text-orange-600">kcal/dzień</p>
+                      <p className="text-xs text-orange-warm">kcal/dzień</p>
                     </div>
                     
-                    <div className="bg-purple-50 rounded-lg p-3 text-center">
+                    <div className="bg-green-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
-                        <Utensils className="w-4 h-4 text-purple-600" />
-                        <span className="text-sm font-medium text-purple-800">{totalMeals}</span>
+                        <Utensils className="w-4 h-4 text-green-fresh" />
+                        <span className="text-sm font-medium text-green-fresh">{totalMeals}</span>
                       </div>
-                      <p className="text-xs text-purple-600">posiłków</p>
+                      <p className="text-xs text-green-fresh">posiłków</p>
                     </div>
                   </div>
 
@@ -244,7 +244,7 @@ export function MealPlanHistoryView() {
                       {planInput.mealsToPlan.map((mealType) => (
                         <span 
                           key={mealType}
-                          className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-700"
+                          className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-muted text-muted-foreground"
                         >
                           {mealType === 'breakfast' && '🌅'}
                           {mealType === 'lunch' && '☀️'}
@@ -269,13 +269,13 @@ export function MealPlanHistoryView() {
                         {planInput.excludedIngredients.slice(0, 3).map((ingredient) => (
                           <span 
                             key={ingredient}
-                            className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-red-50 text-red-700 border border-red-200"
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-destructive/10 text-destructive border border-destructive/20"
                           >
                             🚫 {ingredient}
                           </span>
                         ))}
                         {planInput.excludedIngredients.length > 3 && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-600">
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-muted text-muted-foreground">
                             +{planInput.excludedIngredients.length - 3} więcej
                           </span>
                         )}
