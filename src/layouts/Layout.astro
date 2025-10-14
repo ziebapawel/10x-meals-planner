@@ -3,13 +3,20 @@ import "../styles/global.css";
 
 interface Props {
   title?: string;
+  showNav?: boolean;
 }
 
-const { title = "10x Astro Starter" } = Astro.props;
+const { title = "Planer Posiłków", showNav = true } = Astro.props;
+
+// TODO: Get session from Astro.locals when auth backend is ready
+// const session = Astro.locals.session;
+// const user = Astro.locals.user;
+const session = null as any; // Placeholder until auth backend is implemented
+const user = null as { email?: string } | null; // Placeholder until auth backend is implemented
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -18,6 +25,51 @@ const { title = "10x Astro Starter" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    {
+      showNav && (
+        <nav class="border-b bg-card">
+          <div class="container mx-auto px-4 py-4 flex items-center justify-between max-w-7xl">
+            <a href="/" class="text-xl font-bold text-foreground hover:text-primary transition-colors">
+              Planer Posiłków
+            </a>
+            <div class="flex items-center gap-4">
+              {session ? (
+                <>
+                  {/* Authenticated State */}
+                  <span class="text-sm text-muted-foreground hidden sm:inline">
+                    {user?.email}
+                  </span>
+                  <form method="POST" action="/api/auth/logout" class="inline">
+                    <button
+                      type="submit"
+                      class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2"
+                    >
+                      Wyloguj się
+                    </button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  {/* Unauthenticated State */}
+                  <a
+                    href="/login"
+                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2"
+                  >
+                    Zaloguj się
+                  </a>
+                  <a
+                    href="/register"
+                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 h-9 px-4 py-2"
+                  >
+                    Zarejestruj się
+                  </a>
+                </>
+              )}
+            </div>
+          </div>
+        </nav>
+      )
+    }
     <slot />
   </body>
 </html>
