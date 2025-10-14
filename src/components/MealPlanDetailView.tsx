@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import type { MealPlanDetailsDto } from "../types";
+import type { MealPlanDetailsDto, RecipeDto, GenerateMealPlanCommand } from "../types";
 
 interface MealPlanDetailViewProps {
   planId: string;
@@ -23,8 +23,9 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
     loading: true,
     error: null,
   });
-  const [selectedRecipe, setSelectedRecipe] = useState<unknown | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isGeneratingShoppingList, setIsGeneratingShoppingList] = useState(false);
 
   // Fetch meal plan details
   useEffect(() => {
@@ -57,7 +58,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   }, [planId]);
 
   // Handle recipe view
-  const handleViewRecipe = (recipe: unknown) => {
+  const handleViewRecipe = (recipe: RecipeDto) => {
     setSelectedRecipe(recipe);
   };
 
@@ -96,6 +97,36 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   // Handle back navigation
   const handleBack = () => {
     window.location.href = "/app";
+  };
+
+  // Handle shopping list generation
+  const handleGenerateShoppingList = async () => {
+    try {
+      setIsGeneratingShoppingList(true);
+
+      const response = await fetch(`/api/meal-plans/${planId}/shopping-list`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Wystąpił błąd podczas generowania listy zakupów");
+      }
+
+      toast.success("Lista zakupów została wygenerowana!");
+
+      // Refresh the meal plan data to show the new shopping list
+      const updatedResponse = await fetch(`/api/meal-plans/${planId}`);
+      if (updatedResponse.ok) {
+        const updatedData: MealPlanDetailsDto = await updatedResponse.json();
+        setState((prev) => ({ ...prev, data: updatedData }));
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Nieznany błąd";
+      toast.error(errorMessage);
+    } finally {
+      setIsGeneratingShoppingList(false);
+    }
   };
 
   // Loading state
@@ -154,7 +185,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   }
 
   const { data: plan } = state;
-  const planInput = plan.plan_input as Record<string, unknown>;
+  const planInput = plan.plan_input as unknown as GenerateMealPlanCommand;
 
   // Transform MealPlanDetailsDto to GeneratedMealPlanDto format for MealPlanGrid
   const transformPlanForGrid = (planDetails: MealPlanDetailsDto) => {
@@ -166,11 +197,11 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
         }
         acc[meal.day].push({
           type: meal.type,
-          recipe: meal.recipe_data,
+          recipe: meal.recipe_data as RecipeDto,
         });
         return acc;
       },
-      {} as Record<number, { type: string; recipe: unknown }[]>
+      {} as Record<number, { type: string; recipe: RecipeDto }[]>
     );
 
     // Convert to the format expected by MealPlanGrid
@@ -237,16 +268,18 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
                 <span className="font-medium">{(planInput.cuisine as string) || "Standardowa"}</span>
               </div>
             </div>
-            {planInput.excludedIngredients && (planInput.excludedIngredients as string[]).length > 0 && (
-              <div className="mt-4">
-                <span className="text-sm text-muted-foreground">Wykluczone składniki:</span>
-                <span className="ml-2 text-sm">{(planInput.excludedIngredients as string[]).join(", ")}</span>
-              </div>
-            )}
-            {planInput.mealsToPlan && (planInput.mealsToPlan as string[]).length > 0 && (
+            {planInput.excludedIngredients &&
+              Array.isArray(planInput.excludedIngredients) &&
+              planInput.excludedIngredients.length > 0 && (
+                <div className="mt-4">
+                  <span className="text-sm text-muted-foreground">Wykluczone składniki:</span>
+                  <span className="ml-2 text-sm">{planInput.excludedIngredients.join(", ")}</span>
+                </div>
+              )}
+            {planInput.mealsToPlan && Array.isArray(planInput.mealsToPlan) && planInput.mealsToPlan.length > 0 && (
               <div className="mt-2">
                 <span className="text-sm text-muted-foreground">Planowane posiłki:</span>
-                <span className="ml-2 text-sm">{(planInput.mealsToPlan as string[]).join(", ")}</span>
+                <span className="ml-2 text-sm">{planInput.mealsToPlan.join(", ")}</span>
               </div>
             )}
           </CardContent>
@@ -254,10 +287,20 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
         {/* Meal Plan Grid */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">Plan posiłków</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Plan posiłków</h2>
+            {!plan.shoppingList && (
+              <Button onClick={handleGenerateShoppingList} disabled={isGeneratingShoppingList} className="gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                {isGeneratingShoppingList ? "Generowanie..." : "Generuj listę zakupów"}
+              </Button>
+            )}
+          </div>
           <MealPlanGrid
             plan={gridPlan}
-            onRegenerate={() => {}} // No regeneration in detail view
+            onRegenerate={() => {
+              // No regeneration in detail view
+            }}
             onViewDetails={handleViewRecipe}
             regeneratingMeal={null}
             showRegenerate={false}
