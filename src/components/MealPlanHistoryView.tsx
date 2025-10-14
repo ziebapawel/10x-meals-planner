@@ -1,15 +1,43 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Calendar, Users, ChefHat, Plus, ArrowRight } from "lucide-react";
+import { Calendar, Users, ChefHat, Plus, ArrowRight, Clock, Utensils, Flame, Star } from "lucide-react";
 import { toast } from "sonner";
-import type { MealPlanListItemDto, ListMealPlansDto } from "../types";
+import type { MealPlanListItemDto, ListMealPlansDto, GenerateMealPlanCommand } from "../types";
 
 interface MealPlanHistoryState {
   data: ListMealPlansDto | null;
   loading: boolean;
   error: string | null;
 }
+
+// Helper function to get cuisine emoji
+const getCuisineEmoji = (cuisine: string): string => {
+  const cuisineEmojis: Record<string, string> = {
+    'Italian': '🍝',
+    'Polish': '🥟',
+    'Mexican': '🌮',
+    'Asian': '🍜',
+    'Indian': '🍛',
+    'French': '🥐',
+    'Mediterranean': '🫒',
+    'American': '🍔',
+    'Thai': '🌶️',
+    'Chinese': '🥢',
+    'Japanese': '🍣',
+    'Greek': '🧀',
+    'Spanish': '🥘',
+    'German': '🥨',
+    'Turkish': '🥙',
+  };
+  return cuisineEmojis[cuisine] || '🍽️';
+};
+
+// Helper function to calculate total calories
+const calculateTotalCalories = (planInput: GenerateMealPlanCommand): number => {
+  return planInput.calorieTargets.reduce((total, target) => total + target.calories, 0);
+};
+
 
 export function MealPlanHistoryView() {
   const [state, setState] = useState<MealPlanHistoryState>({
@@ -137,45 +165,127 @@ export function MealPlanHistoryView() {
 
         {/* Plans Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.id} 
-              className="cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => handlePlanClick(plan.id)}
-            >
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="text-lg">Plan posiłków</span>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{new Date(plan.created_at).toLocaleDateString("pl-PL")}</span>
+          {plans.map((plan) => {
+            const planInput = plan.plan_input as GenerateMealPlanCommand;
+            const totalCalories = calculateTotalCalories(planInput);
+            const cuisineEmoji = getCuisineEmoji(planInput.cuisine);
+            const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
+            
+            return (
+              <Card 
+                key={plan.id} 
+                className="cursor-pointer card-elevated group border-2 hover:border-primary/30 hover:scale-[1.02] transition-all duration-300"
+                onClick={() => handlePlanClick(plan.id)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">{cuisineEmoji}</span>
+                        <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                          Plan {planInput.cuisine}
+                        </CardTitle>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar className="w-3 h-3" />
+                        <span>{new Date(plan.created_at).toLocaleDateString("pl-PL")}</span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4" />
-                    <span>{(plan.plan_input as any).daysCount} dni</span>
+                </CardHeader>
+                
+                <CardContent className="space-y-4">
+                  {/* Main Stats */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-orange-light rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Calendar className="w-4 h-4 text-orange-warm" />
+                        <span className="text-sm font-medium text-orange-warm">{planInput.daysCount}</span>
+                      </div>
+                      <p className="text-xs text-orange-warm">dni</p>
+                    </div>
+                    
+                    <div className="bg-green-light rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Users className="w-4 h-4 text-green-fresh" />
+                        <span className="text-sm font-medium text-green-fresh">{planInput.peopleCount}</span>
+                      </div>
+                      <p className="text-xs text-green-fresh">
+                        {planInput.peopleCount === 1 ? 'osoba' : 'osób'}
+                      </p>
+                    </div>
                   </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="w-4 h-4" />
-                    <span>{(plan.plan_input as any).peopleCount} {(plan.plan_input as any).peopleCount === 1 ? 'osoba' : 'osób'}</span>
+
+                  {/* Calories and Meals */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-orange-light rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Flame className="w-4 h-4 text-orange-warm" />
+                        <span className="text-sm font-medium text-orange-warm">{totalCalories}</span>
+                      </div>
+                      <p className="text-xs text-orange-warm">kcal/dzień</p>
+                    </div>
+                    
+                    <div className="bg-green-light rounded-lg p-3 text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Utensils className="w-4 h-4 text-green-fresh" />
+                        <span className="text-sm font-medium text-green-fresh">{totalMeals}</span>
+                      </div>
+                      <p className="text-xs text-green-fresh">posiłków</p>
+                    </div>
                   </div>
-                  
-                  {(plan.plan_input as any).cuisine && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <ChefHat className="w-4 h-4" />
-                      <span>{(plan.plan_input as any).cuisine}</span>
+
+
+                  {/* Meal Types */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground">Typy posiłków:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {planInput.mealsToPlan.map((mealType) => (
+                        <span 
+                          key={mealType}
+                          className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-muted text-muted-foreground"
+                        >
+                          {mealType === 'breakfast' && '🌅'}
+                          {mealType === 'lunch' && '☀️'}
+                          {mealType === 'dinner' && '🌙'}
+                          {mealType === 'snack' && '🍎'}
+                          <span className="ml-1 capitalize">
+                            {mealType === 'breakfast' ? 'Śniadanie' :
+                             mealType === 'lunch' ? 'Obiad' :
+                             mealType === 'dinner' ? 'Kolacja' :
+                             mealType === 'snack' ? 'Przekąska' : mealType}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Excluded Ingredients */}
+                  {planInput.excludedIngredients.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">Wykluczone składniki:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {planInput.excludedIngredients.slice(0, 3).map((ingredient) => (
+                          <span 
+                            key={ingredient}
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-destructive/10 text-destructive border border-destructive/20"
+                          >
+                            🚫 {ingredient}
+                          </span>
+                        ))}
+                        {planInput.excludedIngredients.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-muted text-muted-foreground">
+                            +{planInput.excludedIngredients.length - 3} więcej
+                          </span>
+                        )}
+                      </div>
                     </div>
                   )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Pagination */}

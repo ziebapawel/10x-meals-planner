@@ -25,10 +25,10 @@ const user = Astro.locals.user;
   <body>
     {
       showNav && (
-        <nav class="border-b bg-card">
+        <nav class="border-b bg-card/50 backdrop-blur-sm">
           <div class="container mx-auto px-4 py-4 flex items-center justify-between max-w-7xl">
-            <a href="/" class="text-xl font-bold text-foreground hover:text-primary transition-colors">
-              Planer Posiłków
+            <a href="/" class="text-xl font-bold text-foreground hover:text-primary transition-colors duration-300">
+              <span class="text-orange-warm">🍽️</span> Planer Posiłków
             </a>
             <div class="flex items-center gap-4">
               {user ? (

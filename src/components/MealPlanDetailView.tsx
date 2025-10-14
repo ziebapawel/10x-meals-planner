@@ -3,7 +3,7 @@ import { MealPlanGrid } from "./MealPlanGrid";
 import { RecipeDetailModal } from "./RecipeDetailModal";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, Users, ChefHat, ShoppingCart, Trash2, Package, List } from "lucide-react";
 import { toast } from "sonner";
 import type { MealPlanDetailsDto, RecipeDto, GenerateMealPlanCommand } from "../types";
 
@@ -16,6 +16,68 @@ interface MealPlanState {
   loading: boolean;
   error: string | null;
 }
+
+// Helper function to get category emoji
+const getCategoryEmoji = (category: string): string => {
+  const categoryEmojis: Record<string, string> = {
+    warzywa: "🥬",
+    owoce: "🍎",
+    mięso: "🥩",
+    nabiał: "🥛",
+    pieczywo: "🍞",
+    przyprawy: "🧂",
+    konserwy: "🥫",
+    mrożonki: "🧊",
+    słodycze: "🍫",
+    napoje: "🥤",
+    alkohol: "🍷",
+    makarony: "🍝",
+    ryż: "🍚",
+    kasze: "🌾",
+    orzechy: "🥜",
+    nasiona: "🌰",
+    oleje: "🫒",
+    sosy: "🍯",
+    mąka: "🌾",
+    cukier: "🍯",
+    sól: "🧂",
+    pieprz: "🌶️",
+    czosnek: "🧄",
+    cebula: "🧅",
+  };
+
+  const lowerCategory = category.toLowerCase();
+  for (const [key, emoji] of Object.entries(categoryEmojis)) {
+    if (lowerCategory.includes(key)) {
+      return emoji;
+    }
+  }
+  return "📦";
+};
+
+// Helper function to get category color
+const getCategoryColor = (category: string): string => {
+  const categoryColors: Record<string, string> = {
+    warzywa: "bg-green-50 border-green-200 text-green-800",
+    owoce: "bg-red-50 border-red-200 text-red-800",
+    mięso: "bg-pink-50 border-pink-200 text-pink-800",
+    nabiał: "bg-blue-50 border-blue-200 text-blue-800",
+    pieczywo: "bg-yellow-50 border-yellow-200 text-yellow-800",
+    przyprawy: "bg-orange-50 border-orange-200 text-orange-800",
+    konserwy: "bg-gray-50 border-gray-200 text-gray-800",
+    mrożonki: "bg-cyan-50 border-cyan-200 text-cyan-800",
+    słodycze: "bg-purple-50 border-purple-200 text-purple-800",
+    napoje: "bg-indigo-50 border-indigo-200 text-indigo-800",
+  };
+
+  const lowerCategory = category.toLowerCase();
+  for (const [key, color] of Object.entries(categoryColors)) {
+    if (lowerCategory.includes(key)) {
+      return color;
+    }
+  }
+  return "bg-gray-50 border-gray-200 text-gray-800";
+};
 
 export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   const [state, setState] = useState<MealPlanState>({
@@ -309,32 +371,66 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
         {/* Shopping List */}
         {plan.shoppingList && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
+          <Card className="border-2 border-primary/20">
+            <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
+              <CardTitle className="flex items-center gap-3 text-2xl">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <ShoppingCart className="w-6 h-6 text-primary" />
+                </div>
                 Lista zakupów
+                <div className="ml-auto flex items-center gap-2 text-sm font-normal text-muted-foreground">
+                  <Package className="w-4 h-4" />
+                  <span>
+                    {
+                      Object.values(
+                        ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
+                      ).flat().length
+                    }{" "}
+                    produktów
+                  </span>
+                </div>
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               <div className="space-y-4">
                 {Object.entries(
                   ((plan.shoppingList as Record<string, unknown>).list_content as Record<string, unknown[]>) || {}
-                ).map(([category, items]) => (
-                  <div key={category}>
-                    <h4 className="font-semibold text-lg mb-2 capitalize">{category}</h4>
-                    <ul className="space-y-1">
-                      {(items as Record<string, unknown>[]).map((item: Record<string, unknown>, index: number) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <span className="w-2 h-2 bg-primary rounded-full"></span>
-                          <span>
-                            {item.item as string} - {item.quantity as string}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                ).map(([category, items]) => {
+                  const categoryEmoji = getCategoryEmoji(category);
+                  const categoryColor = getCategoryColor(category);
+                  const categoryItems = items as Record<string, unknown>[];
+
+                  return (
+                    <div key={category} className="space-y-2">
+                      {/* Category Header */}
+                      <div className={`flex items-center gap-2 px-3 py-2 rounded-md border ${categoryColor}`}>
+                        <span className="text-lg">{categoryEmoji}</span>
+                        <h4 className="font-semibold text-base capitalize">{category}</h4>
+                        <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+                          <List className="w-3 h-3" />
+                          <span>{categoryItems.length}</span>
+                        </div>
+                      </div>
+
+                      {/* Items List - Grid Layout */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 ml-4">
+                        {categoryItems.map((item: Record<string, unknown>, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-white rounded border border-gray-100 hover:border-gray-200 transition-colors"
+                          >
+                            <span className="font-medium text-sm text-gray-900 truncate pr-2">
+                              {item.item as string}
+                            </span>
+                            <span className="text-xs font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded flex-shrink-0">
+                              {item.quantity as string}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           </Card>
