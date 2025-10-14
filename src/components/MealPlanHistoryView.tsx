@@ -158,18 +158,18 @@ export function MealPlanHistoryView() {
                   
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4" />
-                    <span>{plan.plan_input.days} dni</span>
+                    <span>{(plan.plan_input as any).daysCount} dni</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" />
-                    <span>{plan.plan_input.people} {plan.plan_input.people === 1 ? 'osoba' : 'osób'}</span>
+                    <span>{(plan.plan_input as any).peopleCount} {(plan.plan_input as any).peopleCount === 1 ? 'osoba' : 'osób'}</span>
                   </div>
                   
-                  {plan.plan_input.diet && (
+                  {(plan.plan_input as any).cuisine && (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <ChefHat className="w-4 h-4" />
-                      <span>{plan.plan_input.diet}</span>
+                      <span>{(plan.plan_input as any).cuisine}</span>
                     </div>
                   )}
                 </div>

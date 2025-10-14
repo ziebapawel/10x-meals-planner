@@ -6,9 +6,10 @@ interface MealPlanGridProps {
   onRegenerate: (day: number, type: string) => void;
   onViewDetails: (recipe: RecipeDto) => void;
   regeneratingMeal: { day: number; type: string } | null;
+  showRegenerate?: boolean;
 }
 
-export function MealPlanGrid({ plan, onRegenerate, onViewDetails, regeneratingMeal }: MealPlanGridProps) {
+export function MealPlanGrid({ plan, onRegenerate, onViewDetails, regeneratingMeal, showRegenerate = true }: MealPlanGridProps) {
   if (!plan || !plan.plan || !plan.plan.days) {
     return null;
   }
@@ -30,6 +31,7 @@ export function MealPlanGrid({ plan, onRegenerate, onViewDetails, regeneratingMe
                   onRegenerate={onRegenerate}
                   onViewDetails={onViewDetails}
                   isRegenerating={isRegenerating}
+                  showRegenerate={showRegenerate}
                 />
               );
             })}
