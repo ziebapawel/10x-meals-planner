@@ -24,7 +24,7 @@ export const POST: APIRoute = async (context) => {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
-     });
+      });
     }
 
     // Parse and validate request body

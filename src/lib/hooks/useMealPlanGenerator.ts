@@ -63,8 +63,7 @@ const getDefaultFormValues = (): GenerateMealPlanCommand => {
 };
 
 export function useMealPlanGenerator() {
-  const [workingMealPlan, setWorkingMealPlan] =
-    useState<GeneratedMealPlanDto | null>(null);
+  const [workingMealPlan, setWorkingMealPlan] = useState<GeneratedMealPlanDto | null>(null);
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeDto | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState<{
@@ -101,18 +100,13 @@ export function useMealPlanGenerator() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || "Nie udało się wygenerować planu posiłków"
-        );
+        throw new Error(errorData.error || "Nie udało się wygenerować planu posiłków");
       }
 
       const generatedPlan: GeneratedMealPlanDto = await response.json();
       setWorkingMealPlan(generatedPlan);
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Wystąpił błąd podczas generowania planu";
+      const message = err instanceof Error ? err.message : "Wystąpił błąd podczas generowania planu";
       setError(message);
       console.error("Failed to generate meal plan:", err);
     } finally {
@@ -157,9 +151,7 @@ export function useMealPlanGenerator() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || "Nie udało się zregenerować posiłku"
-        );
+        throw new Error(errorData.error || "Nie udało się zregenerować posiłku");
       }
 
       const regeneratedMeal: RegeneratedMealDto = await response.json();
@@ -190,10 +182,7 @@ export function useMealPlanGenerator() {
         };
       });
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Wystąpił błąd podczas regeneracji posiłku";
+      const message = err instanceof Error ? err.message : "Wystąpił błąd podczas regeneracji posiłku";
       setError(message);
       console.error("Failed to regenerate meal:", err);
     } finally {
@@ -247,10 +236,7 @@ export function useMealPlanGenerator() {
 
       return savedPlan.id;
     } catch (err) {
-      const message =
-        err instanceof Error
-          ? err.message
-          : "Wystąpił błąd podczas zapisywania planu";
+      const message = err instanceof Error ? err.message : "Wystąpił błąd podczas zapisywania planu";
       setError(message);
       console.error("Failed to save meal plan:", err);
       return null;
@@ -286,4 +272,3 @@ export function useMealPlanGenerator() {
     clearError,
   };
 }
-

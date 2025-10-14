@@ -2,14 +2,13 @@
 import Layout from "../layouts/Layout.astro";
 import { RegisterForm } from "../components/auth";
 
-// TODO: Check if user is already authenticated and redirect to homepage
-// This will be implemented when middleware and auth backend are ready
-// if (Astro.locals.session) {
-//   return Astro.redirect("/");
-// }
+// Redirect authenticated users to homepage
+// This is handled by middleware, but we keep this as a fallback
+if (Astro.locals.user) {
+  return Astro.redirect("/");
+}
 ---
 
 <Layout title="Zarejestruj się - Planer Posiłków" showNav={false}>
   <RegisterForm client:load />
 </Layout>
-
