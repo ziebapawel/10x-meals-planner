@@ -125,18 +125,18 @@ export function MealPlanHistoryView() {
   // Empty state
   if (plans.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background" data-testid="meal-plan-history-view">
         <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-md mx-auto">
             <div className="mb-8">
               <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h1 className="text-3xl font-bold mb-2">Brak planów posiłków</h1>
+              <h1 className="text-3xl font-bold mb-2" data-testid="empty-state-title">Brak planów posiłków</h1>
               <p className="text-muted-foreground mb-8">
-                Nie masz jeszcze żadnych zapisanych planów posiłków. 
+                Nie masz jeszcze żadnych zapisanych planów posiłków.
                 Stwórz swój pierwszy plan, aby rozpocząć!
               </p>
             </div>
-            <Button onClick={handleCreateNew} size="lg">
+            <Button onClick={handleCreateNew} size="lg" data-testid="create-first-plan-button">
               <Plus className="w-5 h-5 mr-2" />
               Stwórz pierwszy plan
             </Button>
@@ -147,35 +147,36 @@ export function MealPlanHistoryView() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-testid="meal-plan-history-view">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Moje Plany Posiłków</h1>
+            <h1 className="text-3xl font-bold" data-testid="meal-plan-history-title">Moje Plany Posiłków</h1>
             <p className="text-muted-foreground">
               Zarządzaj swoimi zapisanymi planami posiłków
             </p>
           </div>
-          <Button onClick={handleCreateNew}>
+          <Button onClick={handleCreateNew} data-testid="create-new-plan-button">
             <Plus className="w-4 h-4 mr-2" />
             Nowy plan
           </Button>
         </div>
 
         {/* Plans Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" data-testid="meal-plans-grid">
           {plans.map((plan) => {
             const planInput = plan.plan_input as GenerateMealPlanCommand;
             const totalCalories = calculateTotalCalories(planInput);
             const cuisineEmoji = getCuisineEmoji(planInput.cuisine);
             const totalMeals = planInput.daysCount * planInput.mealsToPlan.length;
-            
+
             return (
-              <Card 
-                key={plan.id} 
+              <Card
+                key={plan.id}
                 className="cursor-pointer card-elevated group border-2 hover:border-primary/30 hover:scale-[1.02] transition-all duration-300"
                 onClick={() => handlePlanClick(plan.id)}
+                data-testid={`meal-plan-card-${plan.id}`}
               >
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
