@@ -68,10 +68,10 @@ export function LoginForm() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" data-testid="login-form">
             {/* Error Message */}
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-start gap-2">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-start gap-2" data-testid="login-error-message">
                 <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" />
                 <p className="text-sm text-destructive">{error}</p>
               </div>
@@ -90,6 +90,7 @@ export function LoginForm() {
                 {...register("email")}
                 aria-invalid={!!errors.email}
                 disabled={isLoading}
+                data-testid="login-email-input"
               />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
@@ -107,26 +108,27 @@ export function LoginForm() {
                 {...register("password")}
                 aria-invalid={!!errors.password}
                 disabled={isLoading}
+                data-testid="login-password-input"
               />
               {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
             </div>
 
             {/* Forgot Password Link */}
             <div className="flex justify-end">
-              <a href="/forgot-password" className="text-sm text-primary hover:underline">
+              <a href="/forgot-password" className="text-sm text-primary hover:underline" data-testid="login-forgot-password-link">
                 Zapomniałeś hasła?
               </a>
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading} data-testid="login-submit-button">
               {isLoading ? "Logowanie..." : "Zaloguj się"}
             </Button>
 
             {/* Register Link */}
             <div className="text-center text-sm text-muted-foreground">
               Nie masz konta?{" "}
-              <a href="/register" className="text-primary hover:underline">
+              <a href="/register" className="text-primary hover:underline" data-testid="login-register-link">
                 Zarejestruj się
               </a>
             </div>
