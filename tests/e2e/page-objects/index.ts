@@ -5,3 +5,5 @@
 
 export { LoginPage } from './LoginPage';
 export { MealPlanHistoryPage } from './MealPlanHistoryPage';
+export { PlanGenerationPage } from './PlanGenerationPage';
+export { MealPlanDetailPage } from './MealPlanDetailPage';

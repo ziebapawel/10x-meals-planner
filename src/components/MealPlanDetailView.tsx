@@ -284,12 +284,12 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
   const gridPlan = transformPlanForGrid(plan);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-testid="meal-plan-detail-view">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button onClick={handleBack} variant="outline" size="sm">
+            <Button onClick={handleBack} variant="outline" size="sm" data-testid="back-to-plans-button">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Powrót
             </Button>
@@ -298,7 +298,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
               <p className="text-muted-foreground">Utworzony {new Date(plan.created_at).toLocaleDateString("pl-PL")}</p>
             </div>
           </div>
-          <Button onClick={handleDeletePlan} variant="destructive" size="sm" disabled={isDeleting}>
+          <Button onClick={handleDeletePlan} variant="destructive" size="sm" disabled={isDeleting} data-testid="delete-plan-button">
             <Trash2 className="w-4 h-4 mr-2" />
             {isDeleting ? "Usuwanie..." : "Usuń plan"}
           </Button>
@@ -352,7 +352,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Plan posiłków</h2>
             {!plan.shoppingList && (
-              <Button onClick={handleGenerateShoppingList} disabled={isGeneratingShoppingList} className="gap-2">
+              <Button onClick={handleGenerateShoppingList} disabled={isGeneratingShoppingList} className="gap-2" data-testid="generate-shopping-list-button">
                 <ShoppingCart className="w-4 h-4" />
                 {isGeneratingShoppingList ? "Generowanie..." : "Generuj listę zakupów"}
               </Button>
@@ -371,7 +371,7 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
 
         {/* Shopping List */}
         {plan.shoppingList && (
-          <Card className="border-2 border-primary/20">
+          <Card className="border-2 border-primary/20" data-testid="shopping-list-card">
             <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10">
               <CardTitle className="flex items-center gap-3 text-2xl">
                 <div className="p-2 bg-primary/10 rounded-lg">
