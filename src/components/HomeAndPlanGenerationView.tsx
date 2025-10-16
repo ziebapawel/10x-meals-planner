@@ -78,7 +78,7 @@ export function HomeAndPlanGenerationView() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Twój Plan Posiłków</h2>
-                <Button onClick={onSavePlan} disabled={isLoading} size="lg" className="gap-2">
+                <Button onClick={onSavePlan} disabled={isLoading} size="lg" className="gap-2" data-testid="save-plan-button">
                   <Save />
                   {isLoading ? "Zapisywanie..." : "Zapisz plan"}
                 </Button>
@@ -99,7 +99,7 @@ export function HomeAndPlanGenerationView() {
 
           {/* Empty State */}
           {!workingMealPlan && !isLoading && (
-            <Card className="border-dashed border-2 border-primary/30 card-elevated">
+            <Card className="border-dashed border-2 border-primary/30 card-elevated" data-testid="plan-generation-empty-state">
               <CardContent className="py-12 text-center">
                 <ChefHat className="size-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Zacznij planować posiłki</h3>
@@ -113,7 +113,7 @@ export function HomeAndPlanGenerationView() {
 
           {/* Loading State */}
           {isLoading && !workingMealPlan && (
-            <Card className="card-elevated">
+            <Card className="card-elevated" data-testid="plan-generation-loading-state">
               <CardContent className="py-12 text-center">
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent" />

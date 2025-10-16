@@ -82,7 +82,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-fade-in">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 animate-fade-in" data-testid="plan-generation-form">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* People Count */}
         <div className="space-y-2">
@@ -94,6 +94,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
             max={20}
             {...register("peopleCount", { valueAsNumber: true })}
             aria-invalid={!!errors.peopleCount}
+            data-testid="people-count-input"
           />
           {errors.peopleCount && <p className="text-sm text-destructive">{errors.peopleCount.message}</p>}
         </div>
@@ -108,6 +109,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
             max={14}
             {...register("daysCount", { valueAsNumber: true })}
             aria-invalid={!!errors.daysCount}
+            data-testid="days-count-input"
           />
           {errors.daysCount && <p className="text-sm text-destructive">{errors.daysCount.message}</p>}
         </div>
@@ -121,6 +123,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
           {...register("cuisine")}
           className="flex h-9 w-full rounded-md border bg-background px-3 py-1 text-sm shadow-xs transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50"
           aria-invalid={!!errors.cuisine}
+          data-testid="cuisine-select"
         >
           {CUISINES.map((cuisine) => (
             <option key={cuisine} value={cuisine}>
@@ -134,13 +137,14 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
       {/* Meals to Plan */}
       <div className="space-y-3">
         <Label>Posiłki do zaplanowania</Label>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3" data-testid="meals-to-plan-checkboxes">
           {AVAILABLE_MEALS.map((meal) => (
             <div key={meal.id} className="flex items-center space-x-2">
               <Checkbox
                 id={meal.id}
                 checked={mealsToPlan?.includes(meal.id)}
                 onCheckedChange={(checked) => handleMealToggle(meal.id, !!checked)}
+                data-testid={`meal-checkbox-${meal.id}`}
               />
               <Label htmlFor={meal.id} className="text-sm font-normal cursor-pointer">
                 {meal.label}
@@ -154,7 +158,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
       {/* Calorie Targets */}
       <div className="space-y-3">
         <Label>Dzienne cele kaloryczne</Label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-testid="calorie-targets-inputs">
           {Array.from({ length: peopleCount }, (_, i) => (
             <div key={i} className="space-y-2">
               <Label htmlFor={`calories-${i}`}>Osoba {i + 1}</Label>
@@ -168,6 +172,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
                   valueAsNumber: true,
                 })}
                 aria-invalid={!!errors.calorieTargets?.[i]?.calories}
+                data-testid={`calorie-target-input-${i}`}
               />
               {errors.calorieTargets?.[i]?.calories && (
                 <p className="text-sm text-destructive">{errors.calorieTargets[i]?.calories?.message}</p>
@@ -192,6 +197,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
                 input.value = "";
               }
             }}
+            data-testid="excluded-ingredient-input"
           />
           <Button
             type="button"
@@ -203,20 +209,22 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
                 input.value = "";
               }
             }}
+            data-testid="add-excluded-ingredient-button"
           >
             Dodaj
           </Button>
         </div>
         {excludedIngredients && excludedIngredients.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" data-testid="excluded-ingredients-list">
             {excludedIngredients.map((ingredient, index) => (
-              <div key={index} className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md">
+              <div key={index} className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md" data-testid={`excluded-ingredient-${index}`}>
                 <span className="text-sm">{ingredient}</span>
                 <button
                   type="button"
                   onClick={() => handleRemoveIngredient(index)}
                   className="text-muted-foreground hover:text-foreground"
                   aria-label={`Usuń ${ingredient}`}
+                  data-testid={`remove-excluded-ingredient-${index}`}
                 >
                   ×
                 </button>
@@ -227,7 +235,7 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
       </div>
 
       {/* Submit Button */}
-      <Button type="submit" className="w-full" disabled={isLoading}>
+      <Button type="submit" className="w-full" disabled={isLoading} data-testid="generate-plan-submit-button">
         {isLoading ? "Generowanie..." : "Generuj plan posiłków"}
       </Button>
     </form>

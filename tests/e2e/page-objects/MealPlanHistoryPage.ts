@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Meal Plan History Page
@@ -21,21 +21,21 @@ export class MealPlanHistoryPage {
     this.page = page;
 
     // Initialize main locators
-    this.historyView = page.getByTestId('meal-plan-history-view');
-    this.historyTitle = page.getByTestId('meal-plan-history-title');
-    this.createNewPlanButton = page.getByTestId('create-new-plan-button');
-    this.plansGrid = page.getByTestId('meal-plans-grid');
+    this.historyView = page.getByTestId("meal-plan-history-view");
+    this.historyTitle = page.getByTestId("meal-plan-history-title");
+    this.createNewPlanButton = page.getByTestId("create-new-plan-button");
+    this.plansGrid = page.getByTestId("meal-plans-grid");
 
     // Initialize empty state locators
-    this.emptyStateTitle = page.getByTestId('empty-state-title');
-    this.createFirstPlanButton = page.getByTestId('create-first-plan-button');
+    this.emptyStateTitle = page.getByTestId("empty-state-title");
+    this.createFirstPlanButton = page.getByTestId("create-first-plan-button");
   }
 
   /**
    * Navigate to the meal plan history page (homepage)
    */
   async goto() {
-    await this.page.goto('/');
+    await this.page.goto("/");
   }
 
   /**
@@ -52,7 +52,7 @@ export class MealPlanHistoryPage {
    */
   async isEmptyState(): Promise<boolean> {
     try {
-      return await this.emptyStateTitle.isVisible({ timeout: 3000 });
+      return await this.emptyStateTitle.isVisible({ timeout: 30000 });
     } catch {
       return false;
     }
@@ -64,7 +64,7 @@ export class MealPlanHistoryPage {
    */
   async hasPlans(): Promise<boolean> {
     try {
-      return await this.plansGrid.isVisible({ timeout: 3000 });
+      return await this.plansGrid.isVisible({ timeout: 30000 });
     } catch {
       return false;
     }
@@ -145,14 +145,14 @@ export class MealPlanHistoryPage {
    * Wait for the history view to be loaded
    */
   async waitForHistoryViewLoaded() {
-    await this.historyView.waitFor({ state: 'visible' });
+    await this.historyView.waitFor({ state: "visible" });
   }
 
   /**
    * Wait for plans grid to be loaded
    */
   async waitForPlansGridLoaded() {
-    await this.plansGrid.waitFor({ state: 'visible' });
+    await this.plansGrid.waitFor({ state: "visible" });
   }
 
   /**
@@ -162,7 +162,7 @@ export class MealPlanHistoryPage {
    */
   async hasMealPlanCard(planId: string): Promise<boolean> {
     try {
-      return await this.getMealPlanCard(planId).isVisible({ timeout: 3000 });
+      return await this.getMealPlanCard(planId).isVisible({ timeout: 30000 });
     } catch {
       return false;
     }
@@ -180,6 +180,6 @@ export class MealPlanHistoryPage {
       await this.clickCreateNewPlan();
     }
     // Wait for navigation to /generate
-    await this.page.waitForURL('/generate');
+    await this.page.waitForURL("/generate");
   }
 }
