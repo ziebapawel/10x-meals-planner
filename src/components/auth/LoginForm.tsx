@@ -84,7 +84,11 @@ export function LoginForm() {
 
             {/* Forgot Password Link */}
             <div className="flex justify-end">
-              <a href="/forgot-password" className="text-sm text-primary hover:underline" data-testid="login-forgot-password-link">
+              <a
+                href="/forgot-password"
+                className="text-sm text-primary hover:underline"
+                data-testid="login-forgot-password-link"
+              >
                 Zapomniałeś hasła?
               </a>
             </div>

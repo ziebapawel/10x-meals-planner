@@ -1,13 +1,16 @@
 # Plan implementacji widoku: Strona główna i generowanie planu
 
 ## 1. Przegląd
+
 Widok "Strona główna i generowanie planu" jest głównym punktem wejścia dla uwierzytelnionych użytkowników. Jego celem jest umożliwienie użytkownikom zdefiniowania swoich preferencji żywieniowych w formularzu, wygenerowanie na tej podstawie planu posiłków przy użyciu AI, a następnie interaktywną modyfikację (regenerację pojedynczych posiłków) i finalne zapisanie planu na swoim koncie. Widok ten zarządza tymczasowym, "roboczym" stanem planu posiłków przed jego trwałym zapisaniem.
 
 ## 2. Routing widoku
+
 - **Ścieżka**: `/`
 - **Dostępność**: Widok ten powinien być dostępny tylko dla uwierzytelnionych użytkowników. Użytkownicy nieuwierzytelnieni powinni być przekierowywani do strony logowania.
 
 ## 3. Struktura komponentów
+
 Hierarchia komponentów dla tego widoku będzie następująca:
 
 ```
@@ -25,6 +28,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
 ## 4. Szczegóły komponentów
 
 ### `HomeAndPlanGenerationView`
+
 - **Opis komponentu**: Główny, nadrzędny komponent React, który zarządza stanem całego widoku. Odpowiada za integrację z API, obsługę stanu ładowania i błędów oraz koordynację przepływu danych między komponentami podrzędnymi (`PlanGenerationForm`, `MealPlanGrid`).
 - **Główne elementy**: Renderuje `PlanGenerationForm` oraz warunkowo `MealPlanGrid` (po wygenerowaniu planu) i przycisk "Zapisz plan".
 - **Obsługiwane interakcje**:
@@ -37,6 +41,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
 - **Propsy**: Brak.
 
 ### `PlanGenerationForm`
+
 - **Opis komponentu**: Formularz oparty na `react-hook-form` i `zod`, pozwalający użytkownikowi na wprowadzenie kryteriów dla generowanego planu. Stan formularza jest synchronizowany z `localStorage`, aby zachować dane między sesjami.
 - **Główne elementy**: Zestaw pól formularza (`Input`, `Select`, `Checkbox`) z `Shadcn/ui` dla liczby osób, liczby dni, kuchni, wykluczonych składników, docelowej kaloryczności i typów posiłków.
 - **Obsługiwane interakcje**:
@@ -54,6 +59,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
   - `initialValues: GenerateMealPlanCommand`: Początkowe wartości formularza (np. z `localStorage`).
 
 ### `MealPlanGrid`
+
 - **Opis komponentu**: Komponent wizualizujący "roboczy" plan posiłków w formie siatki (dni jako kolumny, typy posiłków jako wiersze). Renderuje komponenty `MealCard` dla każdego posiłku w planie.
 - **Główne elementy**: Struktura `div` oparta na CSS Grid lub Flexbox, iterująca po danych planu i renderująca `MealCard`.
 - **Obsługiwane interakcje**: Brak (delegowane do `MealCard`).
@@ -66,6 +72,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
   - `regeneratingMeal: { day: number; type: string } | null`: Informuje, który posiłek jest w trakcie regeneracji.
 
 ### `MealCard`
+
 - **Opis komponentu**: Karta wyświetlająca nazwę pojedynczego posiłku oraz przyciski akcji ("Regeneruj", "Zobacz szczegóły").
 - **Główne elementy**: Nazwa posiłku, przycisk "Regeneruj", kontener karty reagujący na kliknięcie w celu pokazania szczegółów.
 - **Obsługiwane interakcje**:
@@ -81,6 +88,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
   - `isRegenerating: boolean`: Wskazuje, czy ta konkretna karta jest w trakcie regeneracji (do wyświetlenia wskaźnika ładowania).
 
 ### `RecipeDetailModal`
+
 - **Opis komponentu**: Modal (dialog) z `Shadcn/ui` wyświetlający pełne informacje o przepisie.
 - **Główne elementy**: Tytuł (nazwa dania), lista składników, instrukcje przygotowania, informacja o porcjach.
 - **Obsługiwane interakcje**: Zamknięcie modala.
@@ -91,6 +99,7 @@ Hierarchia komponentów dla tego widoku będzie następująca:
   - `onClose: () => void`: Funkcja zwrotna do zamknięcia modala.
 
 ## 5. Typy
+
 Do implementacji widoku wykorzystane zostaną istniejące typy DTO z `src/types.ts`. Dodatkowo, na potrzeby zarządzania stanem widoku, wprowadzony zostanie jeden ViewModel.
 
 - **`GenerateMealPlanCommand` (DTO)**: Używany do typowania danych formularza i jako payload dla `POST /api/meal-plans/generate`.
@@ -104,25 +113,26 @@ Do implementacji widoku wykorzystane zostaną istniejące typy DTO z `src/types.
   interface HomeAndPlanGenerationViewModel {
     // Stan formularza, synchronizowany z localStorage
     generationFormState: GenerateMealPlanCommand;
-    
+
     // "Roboczy" plan posiłków zwrócony z API, modyfikowalny przez regenerację
     workingMealPlan: GeneratedMealPlanDto | null;
-    
+
     // Przepis aktualnie wyświetlany w modalu
     selectedRecipe: RecipeDto | null;
-    
+
     // Globalny stan ładowania (generowanie, zapisywanie)
     isLoading: boolean;
-    
+
     // Stan ładowania dla konkretnego posiłku podczas regeneracji
     isRegenerating: { day: number; type: string } | null;
-    
+
     // Komunikat błędu z API
     error: string | null;
   }
   ```
 
 ## 6. Zarządzanie stanem
+
 Zarządzanie stanem zostanie scentralizowane w niestandardowym hooku `useMealPlanGenerator`. Takie podejście enkapsuluje logikę, ułatwia jej ponowne użycie i testowanie oraz utrzymuje komponent `HomeAndPlanGenerationView` w czystości.
 
 - **Hook**: `useMealPlanGenerator`
@@ -166,6 +176,7 @@ Zarządzanie stanem zostanie scentralizowane w niestandardowym hooku `useMealPla
   - **Response Body**: `MealPlanDto` (zawierający `id` nowo utworzonego planu).
 
 ## 8. Interakcje użytkownika
+
 1.  **Wypełnianie formularza**: Użytkownik wprowadza dane. Pola są walidowane na bieżąco. Liczba pól na kalorie dynamicznie dostosowuje się do liczby osób.
 2.  **Generowanie planu**: Użytkownik klika "Generuj plan". Przycisk jest blokowany, a na ekranie pojawia się wskaźnik ładowania. Po otrzymaniu odpowiedzi, `MealPlanGrid` jest renderowany z danymi.
 3.  **Przeglądanie przepisu**: Użytkownik klika na kartę posiłku. Otwiera się modal `RecipeDetailModal` ze szczegółami.
@@ -173,12 +184,14 @@ Zarządzanie stanem zostanie scentralizowane w niestandardowym hooku `useMealPla
 5.  **Zapisywanie planu**: Użytkownik klika "Zapisz plan". Na ekranie pojawia się globalny wskaźnik ładowania. Po pomyślnym zapisie, użytkownik jest przekierowywany do widoku szczegółów planu (`/app/plans/[planId]`).
 
 ## 9. Warunki i walidacja
+
 - **Przycisk "Generuj plan"**: Jest aktywny tylko wtedy, gdy formularz `PlanGenerationForm` jest poprawnie wypełniony.
 - **Przycisk "Zapisz plan"**: Jest widoczny i aktywny tylko wtedy, gdy plan posiłków został pomyślnie wygenerowany (`workingMealPlan` nie jest `null`).
 - **Pola kalorii**: Ich liczba musi być równa wartości w polu "Liczba osób".
 - **Walidacja pól**: Wszystkie wymagane pola muszą być wypełnione, a wartości liczbowe muszą znajdować się w rozsądnych zakresach (zgodnie z `zod` schema).
 
 ## 10. Obsługa błędów
+
 - **Błędy walidacji formularza**: Komunikaty o błędach są wyświetlane bezpośrednio pod odpowiednimi polami formularza, zarządzane przez `react-hook-form`.
 - **Błędy API (4xx, 5xx)**:
   - W przypadku niepowodzenia generowania, regeneracji lub zapisu, użytkownikowi zostanie wyświetlona notyfikacja typu "toast" (np. z `Shadcn/ui`) z ogólnym komunikatem błędu (np. "Nie udało się wygenerować planu. Spróbuj ponownie później.").
@@ -186,6 +199,7 @@ Zarządzanie stanem zostanie scentralizowane w niestandardowym hooku `useMealPla
   - Szczegółowe błędy są logowane do konsoli deweloperskiej.
 
 ## 11. Kroki implementacji
+
 1.  **Struktura plików**: Utworzenie plików dla nowych komponentów w `src/components/`, np. `HomeAndPlanGenerationView.tsx`, `PlanGenerationForm.tsx`, `MealPlanGrid.tsx`, `MealCard.tsx`, `RecipeDetailModal.tsx`.
 2.  **Hook stanu**: Implementacja `useMealPlanGenerator.ts` w `src/lib/hooks/` z całą logiką zarządzania stanem i API, na razie z zaślepionymi wywołaniami API.
 3.  **Formularz (`PlanGenerationForm`)**: Budowa formularza z wykorzystaniem `react-hook-form`, `zod` i komponentów `Shadcn/ui`. Podłączenie do hooka `useMealPlanGenerator`. Implementacja logiki zapisu do `localStorage`.

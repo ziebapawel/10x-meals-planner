@@ -33,6 +33,7 @@ npm run test:coverage
 ### Przykładowe testy jednostkowe
 
 W folderze `unit/` znajdziesz przykłady testów:
+
 - `button.test.tsx` - test komponentu React (Button)
 - `utils.test.ts` - test funkcji pomocniczych (cn utility)
 
@@ -64,6 +65,7 @@ npm run test:e2e:report
 ### Przykładowe testy E2E
 
 W folderze `e2e/` znajdziesz przykłady testów:
+
 - `homepage.spec.ts` - test strony głównej
 - `auth.spec.ts` - test flow autentykacji (login/register)
 
@@ -80,6 +82,7 @@ W folderze `e2e/` znajdziesz przykłady testów:
 ### Vitest Configuration
 
 Konfiguracja znajduje się w `vitest.config.ts`:
+
 - Środowisko: jsdom (dla testów komponentów React)
 - Setup file: `vitest.setup.ts`
 - Pokrycie kodu: v8
@@ -88,6 +91,7 @@ Konfiguracja znajduje się w `vitest.config.ts`:
 ### Playwright Configuration
 
 Konfiguracja znajduje się w `playwright.config.ts`:
+
 - Browser: tylko Chromium (Desktop Chrome)
 - Parallel execution: włączone
 - Auto-start dev server: włączone
@@ -113,6 +117,7 @@ Konfiguracja znajduje się w `playwright.config.ts`:
 ## Continuous Integration
 
 Testy są uruchamiane automatycznie w CI/CD pipeline (GitHub Actions):
+
 - Testy jednostkowe: przy każdym pull request
 - Testy E2E: przy każdym pull request do main/develop
 - Coverage: raport pokrycia kodu jest generowany i publikowany

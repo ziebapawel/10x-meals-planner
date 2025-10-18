@@ -217,7 +217,11 @@ export function PlanGenerationForm({ form, onSubmit, isLoading }: PlanGeneration
         {excludedIngredients && excludedIngredients.length > 0 && (
           <div className="flex flex-wrap gap-2" data-testid="excluded-ingredients-list">
             {excludedIngredients.map((ingredient, index) => (
-              <div key={index} className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md" data-testid={`excluded-ingredient-${index}`}>
+              <div
+                key={index}
+                className="flex items-center gap-2 bg-secondary px-3 py-1 rounded-md"
+                data-testid={`excluded-ingredient-${index}`}
+              >
                 <span className="text-sm">{ingredient}</span>
                 <button
                   type="button"

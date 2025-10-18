@@ -17,7 +17,7 @@ export async function generateShoppingList(
   planId: string
 ): Promise<ShoppingListDto> {
   // Check if plan exists and belongs to user
-  const { data: plan, error: planError } = await supabase
+  const { error: planError } = await supabase
     .from("meal_plans")
     .select("id")
     .eq("id", planId)

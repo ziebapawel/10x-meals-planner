@@ -37,16 +37,9 @@ export function LogoutButton({ className }: LogoutButtonProps) {
   };
 
   return (
-    <Button
-      onClick={handleLogout}
-      disabled={isLoading}
-      variant="outline"
-      size="sm"
-      className={className}
-    >
+    <Button onClick={handleLogout} disabled={isLoading} variant="outline" size="sm" className={className}>
       <LogOut className="size-4 mr-2" />
       {isLoading ? "Wylogowywanie..." : "Wyloguj się"}
     </Button>
   );
 }
-

@@ -112,6 +112,7 @@ index.astro (Auth Guard + Layout)
 ## State Management Flow
 
 ### 1. Initial Load
+
 ```
 App Loads
   → useMealPlanGenerator initializes
@@ -121,6 +122,7 @@ App Loads
 ```
 
 ### 2. User Fills Form
+
 ```
 User Types
   → react-hook-form updates
@@ -129,6 +131,7 @@ User Types
 ```
 
 ### 3. Generate Plan
+
 ```
 User Clicks "Generuj plan"
   → onSubmit triggered
@@ -141,6 +144,7 @@ User Clicks "Generuj plan"
 ```
 
 ### 4. View Recipe
+
 ```
 User Clicks MealCard
   → onViewDetails(recipe)
@@ -150,6 +154,7 @@ User Clicks MealCard
 ```
 
 ### 5. Regenerate Meal
+
 ```
 User Clicks "Regeneruj"
   → onRegenerate(day, type)
@@ -162,12 +167,13 @@ User Clicks "Regeneruj"
 ```
 
 ### 6. Save Plan
+
 ```
 User Clicks "Zapisz plan"
   → handleSavePlan()
     → setIsLoading(true)
     → POST /api/meal-plans
-      → Success: 
+      → Success:
         → Clear localStorage
         → Navigate to /app/plans/[planId]
       → Error: toast.error()
@@ -234,4 +240,3 @@ All components use TypeScript with strict typing:
   - Focus states (ring, border)
   - Disabled states (opacity, cursor)
   - Loading states (spinner, text change)
-

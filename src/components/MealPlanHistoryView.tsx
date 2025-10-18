@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Calendar, Users, ChefHat, Plus, ArrowRight, Clock, Utensils, Flame, Star } from "lucide-react";
+import { Calendar, Users, ChefHat, Plus, ArrowRight, Utensils, Flame } from "lucide-react";
 import { toast } from "sonner";
-import type { MealPlanListItemDto, ListMealPlansDto, GenerateMealPlanCommand } from "../types";
+import type { ListMealPlansDto, GenerateMealPlanCommand } from "../types";
 
 interface MealPlanHistoryState {
   data: ListMealPlansDto | null;
@@ -14,30 +14,29 @@ interface MealPlanHistoryState {
 // Helper function to get cuisine emoji
 const getCuisineEmoji = (cuisine: string): string => {
   const cuisineEmojis: Record<string, string> = {
-    'Italian': '🍝',
-    'Polish': '🥟',
-    'Mexican': '🌮',
-    'Asian': '🍜',
-    'Indian': '🍛',
-    'French': '🥐',
-    'Mediterranean': '🫒',
-    'American': '🍔',
-    'Thai': '🌶️',
-    'Chinese': '🥢',
-    'Japanese': '🍣',
-    'Greek': '🧀',
-    'Spanish': '🥘',
-    'German': '🥨',
-    'Turkish': '🥙',
+    Italian: "🍝",
+    Polish: "🥟",
+    Mexican: "🌮",
+    Asian: "🍜",
+    Indian: "🍛",
+    French: "🥐",
+    Mediterranean: "🫒",
+    American: "🍔",
+    Thai: "🌶️",
+    Chinese: "🥢",
+    Japanese: "🍣",
+    Greek: "🧀",
+    Spanish: "🥘",
+    German: "🥨",
+    Turkish: "🥙",
   };
-  return cuisineEmojis[cuisine] || '🍽️';
+  return cuisineEmojis[cuisine] || "🍽️";
 };
 
 // Helper function to calculate total calories
 const calculateTotalCalories = (planInput: GenerateMealPlanCommand): number => {
   return planInput.calorieTargets.reduce((total, target) => total + target.calories, 0);
 };
-
 
 export function MealPlanHistoryView() {
   const [state, setState] = useState<MealPlanHistoryState>({
@@ -52,14 +51,14 @@ export function MealPlanHistoryView() {
   useEffect(() => {
     const fetchMealPlans = async () => {
       try {
-        setState(prev => ({ ...prev, loading: true, error: null }));
-        
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+
         const response = await fetch(`/api/meal-plans?page=${currentPage}&pageSize=${pageSize}`);
-        
+
         if (!response.ok) {
           throw new Error("Wystąpił błąd podczas ładowania planów");
         }
-        
+
         const data: ListMealPlansDto = await response.json();
         setState({ data, loading: false, error: null });
       } catch (error) {
@@ -109,9 +108,7 @@ export function MealPlanHistoryView() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">{state.error}</p>
-            <Button onClick={() => window.location.reload()}>
-              Spróbuj ponownie
-            </Button>
+            <Button onClick={() => window.location.reload()}>Spróbuj ponownie</Button>
           </CardContent>
         </Card>
       </div>
@@ -130,10 +127,11 @@ export function MealPlanHistoryView() {
           <div className="text-center max-w-md mx-auto">
             <div className="mb-8">
               <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <h1 className="text-3xl font-bold mb-2" data-testid="empty-state-title">Brak planów posiłków</h1>
+              <h1 className="text-3xl font-bold mb-2" data-testid="empty-state-title">
+                Brak planów posiłków
+              </h1>
               <p className="text-muted-foreground mb-8">
-                Nie masz jeszcze żadnych zapisanych planów posiłków.
-                Stwórz swój pierwszy plan, aby rozpocząć!
+                Nie masz jeszcze żadnych zapisanych planów posiłków. Stwórz swój pierwszy plan, aby rozpocząć!
               </p>
             </div>
             <Button onClick={handleCreateNew} size="lg" data-testid="create-first-plan-button">
@@ -152,10 +150,10 @@ export function MealPlanHistoryView() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold" data-testid="meal-plan-history-title">Moje Plany Posiłków</h1>
-            <p className="text-muted-foreground">
-              Zarządzaj swoimi zapisanymi planami posiłków
-            </p>
+            <h1 className="text-3xl font-bold" data-testid="meal-plan-history-title">
+              Moje Plany Posiłków
+            </h1>
+            <p className="text-muted-foreground">Zarządzaj swoimi zapisanymi planami posiłków</p>
           </div>
           <Button onClick={handleCreateNew} data-testid="create-new-plan-button">
             <Plus className="w-4 h-4 mr-2" />
@@ -195,7 +193,7 @@ export function MealPlanHistoryView() {
                     <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                   </div>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   {/* Main Stats */}
                   <div className="grid grid-cols-2 gap-3">
@@ -206,15 +204,13 @@ export function MealPlanHistoryView() {
                       </div>
                       <p className="text-xs text-orange-warm">dni</p>
                     </div>
-                    
+
                     <div className="bg-green-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
                         <Users className="w-4 h-4 text-green-fresh" />
                         <span className="text-sm font-medium text-green-fresh">{planInput.peopleCount}</span>
                       </div>
-                      <p className="text-xs text-green-fresh">
-                        {planInput.peopleCount === 1 ? 'osoba' : 'osób'}
-                      </p>
+                      <p className="text-xs text-green-fresh">{planInput.peopleCount === 1 ? "osoba" : "osób"}</p>
                     </div>
                   </div>
 
@@ -227,7 +223,7 @@ export function MealPlanHistoryView() {
                       </div>
                       <p className="text-xs text-orange-warm">kcal/dzień</p>
                     </div>
-                    
+
                     <div className="bg-green-light rounded-lg p-3 text-center">
                       <div className="flex items-center justify-center gap-1 mb-1">
                         <Utensils className="w-4 h-4 text-green-fresh" />
@@ -237,25 +233,29 @@ export function MealPlanHistoryView() {
                     </div>
                   </div>
 
-
                   {/* Meal Types */}
                   <div className="space-y-2">
                     <p className="text-xs font-medium text-muted-foreground">Typy posiłków:</p>
                     <div className="flex flex-wrap gap-1">
                       {planInput.mealsToPlan.map((mealType) => (
-                        <span 
+                        <span
                           key={mealType}
                           className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-muted text-muted-foreground"
                         >
-                          {mealType === 'breakfast' && '🌅'}
-                          {mealType === 'lunch' && '☀️'}
-                          {mealType === 'dinner' && '🌙'}
-                          {mealType === 'snack' && '🍎'}
+                          {mealType === "breakfast" && "🌅"}
+                          {mealType === "lunch" && "☀️"}
+                          {mealType === "dinner" && "🌙"}
+                          {mealType === "snack" && "🍎"}
                           <span className="ml-1 capitalize">
-                            {mealType === 'breakfast' ? 'Śniadanie' :
-                             mealType === 'lunch' ? 'Obiad' :
-                             mealType === 'dinner' ? 'Kolacja' :
-                             mealType === 'snack' ? 'Przekąska' : mealType}
+                            {mealType === "breakfast"
+                              ? "Śniadanie"
+                              : mealType === "lunch"
+                                ? "Obiad"
+                                : mealType === "dinner"
+                                  ? "Kolacja"
+                                  : mealType === "snack"
+                                    ? "Przekąska"
+                                    : mealType}
                           </span>
                         </span>
                       ))}
@@ -268,7 +268,7 @@ export function MealPlanHistoryView() {
                       <p className="text-xs font-medium text-muted-foreground">Wykluczone składniki:</p>
                       <div className="flex flex-wrap gap-1">
                         {planInput.excludedIngredients.slice(0, 3).map((ingredient) => (
-                          <span 
+                          <span
                             key={ingredient}
                             className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-destructive/10 text-destructive border border-destructive/20"
                           >
@@ -292,14 +292,10 @@ export function MealPlanHistoryView() {
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="flex items-center justify-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
+            <Button variant="outline" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
               Poprzednia
             </Button>
-            
+
             <div className="flex items-center gap-1">
               {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
                 <Button
@@ -312,7 +308,7 @@ export function MealPlanHistoryView() {
                 </Button>
               ))}
             </div>
-            
+
             <Button
               variant="outline"
               onClick={() => handlePageChange(currentPage + 1)}

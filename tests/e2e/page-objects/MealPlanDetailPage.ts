@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Meal Plan Detail Page
@@ -22,11 +22,11 @@ export class MealPlanDetailPage {
     this.page = page;
 
     // Initialize main locators
-    this.detailView = page.getByTestId('meal-plan-detail-view');
-    this.backToPlansButton = page.getByTestId('back-to-plans-button');
-    this.deletePlanButton = page.getByTestId('delete-plan-button');
-    this.generateShoppingListButton = page.getByTestId('generate-shopping-list-button');
-    this.shoppingListCard = page.getByTestId('shopping-list-card');
+    this.detailView = page.getByTestId("meal-plan-detail-view");
+    this.backToPlansButton = page.getByTestId("back-to-plans-button");
+    this.deletePlanButton = page.getByTestId("delete-plan-button");
+    this.generateShoppingListButton = page.getByTestId("generate-shopping-list-button");
+    this.shoppingListCard = page.getByTestId("shopping-list-card");
   }
 
   /**
@@ -64,9 +64,9 @@ export class MealPlanDetailPage {
    * Delete the plan and confirm the dialog
    * @param confirm - Whether to confirm deletion (default: true)
    */
-  async deletePlan(confirm: boolean = true) {
+  async deletePlan(confirm = true) {
     // Set up dialog handler before clicking
-    this.page.once('dialog', async (dialog) => {
+    this.page.once("dialog", async (dialog) => {
       if (confirm) {
         await dialog.accept();
       } else {
@@ -78,7 +78,7 @@ export class MealPlanDetailPage {
 
     // If confirmed, wait for navigation to homepage
     if (confirm) {
-      await this.page.waitForURL('/');
+      await this.page.waitForURL("/");
     }
   }
 
@@ -113,8 +113,8 @@ export class MealPlanDetailPage {
    * Wait for shopping list to be generated
    * @param timeout - Maximum time to wait in milliseconds (default: 60 seconds)
    */
-  async waitForShoppingListGenerated(timeout: number = 60000) {
-    await this.shoppingListCard.waitFor({ state: 'visible', timeout });
+  async waitForShoppingListGenerated(timeout = 60000) {
+    await this.shoppingListCard.waitFor({ state: "visible", timeout });
   }
 
   /**
@@ -142,14 +142,14 @@ export class MealPlanDetailPage {
    */
   async navigateBackToPlans() {
     await this.clickBackToPlans();
-    await this.page.waitForURL('/');
+    await this.page.waitForURL("/");
   }
 
   /**
    * Wait for the detail view to be loaded
    */
   async waitForDetailViewLoaded() {
-    await this.detailView.waitFor({ state: 'visible' });
+    await this.detailView.waitFor({ state: "visible" });
   }
 
   /**

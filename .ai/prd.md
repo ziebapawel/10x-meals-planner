@@ -1,12 +1,15 @@
 # Dokument wymagań produktu (PRD) - Meals planner
 
 ## 1. Przegląd produktu
+
 Aplikacja "Meals planner" to inteligentny asystent planowania posiłków w formie aplikacji webowej, zaprojektowany w celu uproszczenia i automatyzacji procesu tworzenia tygodniowych planów żywieniowych oraz generowania list zakupów dla wieloosobowych gospodarstw domowych. Sercem aplikacji jest silnik AI (korzystający z `openrouter.ai`), który na podstawie szczegółowych wytycznych użytkownika – takich jak liczba osób, dni, preferencje kulinarne, ograniczenia dietetyczne i indywidualne zapotrzebowanie kaloryczne – tworzy spersonalizowane przepisy. System kont użytkowników, oparty o `Supabase`, umożliwia zapisywanie historii planów i list zakupów. Aplikacja ma na celu rozwiązanie problemu czasochłonnego planowania, monotonii w diecie oraz niekompletnych zakupów spożywczych.
 
 ## 2. Problem użytkownika
+
 Ręczne tworzenie listy zakupów spożywczych oraz planowanie zróżnicowanych posiłków dla kilkuosobowej rodziny jest procesem skomplikowanym, czasochłonnym i podatnym na błędy. Użytkownicy często borykają się z brakiem pomysłów na dania, co prowadzi do monotonii w diecie. Ponadto, ręczne agregowanie składników z wielu przepisów w jedną listę zakupów często kończy się zapominaniem o niezbędnych produktach lub kupowaniem nadmiarowych ilości. Brak centralnego miejsca do przechowywania planów i list dodatkowo utrudnia organizację.
 
 ## 3. Wymagania funkcjonalne
+
 - `F-001`: System uwierzytelniania użytkowników (rejestracja, logowanie, wylogowanie) z wykorzystaniem `Supabase`.
 - `F-002`: Formularz generowania planu posiłków, pozwalający na zdefiniowanie:
   - `F-002.1`: Liczby osób.
@@ -27,7 +30,9 @@ Ręczne tworzenie listy zakupów spożywczych oraz planowanie zróżnicowanych p
 - `F-012`: Zapisywanie ostatnich ustawień formularza (kaloryczność, liczba osób etc.) w `localStorage` przeglądarki.
 
 ## 4. Granice produktu
+
 Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać następujących funkcjonalności:
+
 - `OOS-001`: Ręczne tworzenie, dodawanie lub edytowanie posiłków w planie.
 - `OOS-002`: System oceniania posiłków lub planów.
 - `OOS-003`: Funkcje współdzielenia planów posiłków i list zakupów między użytkownikami.
@@ -41,6 +46,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
 ## 5. Historyjki użytkowników
 
 ---
+
 - ID: `US-001`
 - Tytuł: Rejestracja nowego użytkownika
 - Opis: Jako nowy użytkownik, chcę móc założyć konto w aplikacji przy użyciu adresu e-mail i hasła, aby móc zapisywać swoje plany posiłków i listy zakupów.
@@ -52,6 +58,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 5. W przypadku błędu (np. zajęty e-mail), wyświetlany jest czytelny komunikat.
 
 ---
+
 - ID: `US-002`
 - Tytuł: Logowanie użytkownika
 - Opis: Jako zarejestrowany użytkownik, chcę móc zalogować się na swoje konto przy użyciu adresu e-mail i hasła, aby uzyskać dostęp do moich zapisanych danych.
@@ -61,6 +68,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 3. W przypadku podania błędnych danych, wyświetlany jest odpowiedni komunikat.
 
 ---
+
 - ID: `US-003`
 - Tytuł: Tworzenie nowego planu posiłków
 - Opis: Jako zalogowany użytkownik, chcę wypełnić formularz z moimi wymaganiami (liczba osób, dni, rodzaj kuchni, wykluczone składniki, kaloryczność dla każdej osoby), aby wygenerować dopasowany do mnie plan posiłków.
@@ -74,6 +82,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 7. Po zakończeniu generowania, widzę interaktywną siatkę z propozycjami posiłków.
 
 ---
+
 - ID: `US-004`
 - Tytuł: Przeglądanie i modyfikacja planu posiłków
 - Opis: Jako użytkownik, po wygenerowaniu planu, chcę móc go przejrzeć i w razie potrzeby wymienić pojedynczy posiłek, który mi nie odpowiada, na inną propozycję.
@@ -85,6 +94,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 5. Proces regeneracji również pokazuje stan ładowania.
 
 ---
+
 - ID: `US-005`
 - Tytuł: Akceptacja i zapisywanie planu
 - Opis: Jako użytkownik, gdy jestem zadowolony z wygenerowanego planu posiłków, chcę go zapisać na moim koncie, aby móc do niego wrócić w przyszłości i wygenerować listę zakupów.
@@ -94,6 +104,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 3. Po zapisaniu jestem przekierowywany do widoku zapisanego planu lub widzę komunikat potwierdzający zapisanie.
 
 ---
+
 - ID: `US-006`
 - Tytuł: Generowanie listy zakupów
 - Opis: Jako użytkownik, po zapisaniu planu posiłków, chcę jednym kliknięciem wygenerować kompletną listę zakupów, która jest automatycznie posortowana według kategorii sklepowych.
@@ -106,18 +117,20 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 6. Wygenerowana lista jest wyświetlana na ekranie.
 
 ---
+
 - ID: `US-007`
 - Tytuł: Przeglądanie szczegółów przepisu
 - Opis: Jako osoba przygotowująca posiłek, chcę móc zobaczyć szczegóły przepisu z planu, a w nim informację, jakiej wielkości porcję (w gramach) mam przygotować dla każdej osoby.
 - Kryteria akceptacji:
   - 1. Kliknięcie na posiłek w zapisanym planie otwiera widok szczegółowy.
   - 2. Widok szczegółowy zawiera:
-      - Nazwę dania.
-      - Listę składników z ilościami i jednostkami.
-      - Kroki przygotowania.
-      - Oddzielną sekcję z instrukcją podziału na porcje, podającą wagę w gramach dla każdej osoby (zgodnie z zadaną kalorycznością).
+    - Nazwę dania.
+    - Listę składników z ilościami i jednostkami.
+    - Kroki przygotowania.
+    - Oddzielną sekcję z instrukcją podziału na porcje, podającą wagę w gramach dla każdej osoby (zgodnie z zadaną kalorycznością).
 
 ---
+
 - ID: `US-008`
 - Tytuł: Dostęp do historii planów
 - Opis: Jako powracający użytkownik, chcę mieć dostęp do listy moich poprzednio zapisanych planów posiłków, aby móc je ponownie przejrzeć.
@@ -128,6 +141,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 4. Kliknięcie na element listy przenosi mnie do statycznego widoku tego planu i powiązanej listy zakupów.
 
 ---
+
 - ID: `US-009`
 - Tytuł: Obsługa błędów AI
 - Opis: Jako użytkownik, w przypadku gdy AI nie jest w stanie wygenerować planu lub listy zakupów, chcę otrzymać jasny komunikat o błędzie i sugestię, co mogę zrobić.
@@ -137,6 +151,7 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 3. W przypadku, gdy AI nie może spełnić zbyt restrykcyjnych wymagań, komunikat powinien sugerować ich uproszczenie.
 
 ---
+
 - ID: `US-010`
 - Tytuł: Obsługa pustego stanu dla nowego użytkownika
 - Opis: Jako nowy, zalogowany użytkownik, który nie stworzył jeszcze żadnego planu, chcę zobaczyć ekran powitalny, który pokieruje mnie do stworzenia mojego pierwszego planu posiłków.
@@ -146,6 +161,8 @@ Wersja MVP (Minimum Viable Product) aplikacji celowo nie będzie zawierać nast�
   - 3. Kliknięcie przycisku przenosi mnie bezpośrednio do formularza generowania planu.
 
 ## 6. Metryki sukcesu
+
 Głównym celem produktu jest dostarczenie wartościowego i trafnego narzędzia, które minimalizuje wysiłek użytkownika w procesie planowania.
+
 - `S-001`: Główny wskaźnik sukcesu: Co najmniej 90% posiłków generowanych przez AI jest akceptowanych przez użytkownika od razu, bez konieczności użycia funkcji "regeneruj".
 - `S-001.1`: Sposób pomiaru: Wdrożenie analityki (np. z wykorzystaniem Supabase) do śledzenia dwóch zdarzeń: `meal_candidate_generated` (każda propozycja posiłku wygenerowana przez AI) oraz `meal_regenerated` (każde kliknięcie przycisku "regeneruj"). Stosunek liczby regeneracji do liczby wszystkich wygenerowanych propozycji pozwoli obliczyć wskaźnik akceptacji.

@@ -14,6 +14,7 @@ This document summarizes the complete implementation of all 7 REST API endpoints
 ### Foundation Components (Step 1-3)
 
 #### 1. Validation Schemas (`src/lib/validation/schemas.ts`)
+
 - ✅ `GenerateMealPlanCommandSchema` - validates meal plan generation
 - ✅ `CreateMealPlanCommandSchema` - validates meal plan creation
 - ✅ `RegenerateMealCommandSchema` - validates meal regeneration
@@ -21,6 +22,7 @@ This document summarizes the complete implementation of all 7 REST API endpoints
 - ✅ `UUIDParamSchema` - validates UUID parameters
 
 #### 2. AI Service (`src/lib/services/ai.service.ts`)
+
 - ✅ `generateMealPlan()` - generates complete meal plans via OpenRouter AI
 - ✅ `regenerateSingleMeal()` - regenerates single meal with context
 - ✅ `aggregateShoppingList()` - aggregates and categorizes ingredients
@@ -28,12 +30,14 @@ This document summarizes the complete implementation of all 7 REST API endpoints
 - ✅ Error handling and response validation
 
 #### 3. Meal Plan Service (`src/lib/services/meal-plan.service.ts`)
+
 - ✅ `createMealPlan()` - creates meal plan with transaction and rollback
 - ✅ `listMealPlans()` - lists meal plans with pagination
 - ✅ `getMealPlanDetails()` - retrieves full meal plan details
 - ✅ `deleteMealPlan()` - deletes meal plan with CASCADE handling
 
 #### 4. Shopping List Service (`src/lib/services/shopping-list.service.ts`)
+
 - ✅ `generateShoppingList()` - generates and saves shopping list
 - ✅ Checks for existing lists (prevents duplicates)
 - ✅ AI-powered ingredient aggregation and categorization
@@ -43,11 +47,13 @@ This document summarizes the complete implementation of all 7 REST API endpoints
 ## Implemented Endpoints
 
 ### 1. POST `/api/meal-plans/generate` - Generate Meal Plan (AI)
+
 **File:** `src/pages/api/meal-plans/generate.ts`
 
 **Purpose:** Generate a new meal plan using AI without saving to database.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ Request body validation (peopleCount, daysCount, cuisine, etc.)
 - ✅ AI generation via OpenRouter
@@ -55,6 +61,7 @@ This document summarizes the complete implementation of all 7 REST API endpoints
 - ✅ Error handling (400, 401, 500)
 
 **Example Request:**
+
 ```json
 POST /api/meal-plans/generate
 {
@@ -73,11 +80,13 @@ POST /api/meal-plans/generate
 ---
 
 ### 2. POST `/api/meal-plans` - Create Meal Plan
+
 **File:** `src/pages/api/meal-plans/index.ts` (POST handler)
 
 **Purpose:** Save an accepted meal plan to the database.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ Request body validation (planInput + meals array)
 - ✅ Transactional insert (meal plan + all meals)
@@ -86,6 +95,7 @@ POST /api/meal-plans/generate
 - ✅ Error handling (400, 401, 500)
 
 **Example Request:**
+
 ```json
 POST /api/meal-plans
 {
@@ -103,11 +113,13 @@ POST /api/meal-plans
 ---
 
 ### 3. GET `/api/meal-plans` - List Meal Plans
+
 **File:** `src/pages/api/meal-plans/index.ts` (GET handler)
 
 **Purpose:** Retrieve paginated list of user's meal plans.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ Query parameter validation (page, pageSize)
 - ✅ Default values (page=1, pageSize=10)
@@ -117,11 +129,13 @@ POST /api/meal-plans
 - ✅ Error handling (400, 401, 500)
 
 **Example Request:**
+
 ```
 GET /api/meal-plans?page=1&pageSize=10
 ```
 
 **Example Response:**
+
 ```json
 {
   "data": [
@@ -142,11 +156,13 @@ GET /api/meal-plans?page=1&pageSize=10
 ---
 
 ### 4. GET `/api/meal-plans/{planId}` - Get Meal Plan Details
+
 **File:** `src/pages/api/meal-plans/[planId]/index.ts` (GET handler)
 
 **Purpose:** Retrieve complete details of a single meal plan.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ UUID parameter validation
 - ✅ Returns meal plan with all meals and shopping list
@@ -155,6 +171,7 @@ GET /api/meal-plans?page=1&pageSize=10
 - ✅ Error handling (400, 401, 404, 500)
 
 **Example Request:**
+
 ```
 GET /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 ```
@@ -162,11 +179,13 @@ GET /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 ---
 
 ### 5. DELETE `/api/meal-plans/{planId}` - Delete Meal Plan
+
 **File:** `src/pages/api/meal-plans/[planId]/index.ts` (DELETE handler)
 
 **Purpose:** Delete a meal plan and all associated data.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ UUID parameter validation
 - ✅ Authorization check (user owns plan)
@@ -176,6 +195,7 @@ GET /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 - ✅ Error handling (400, 401, 404, 500)
 
 **Example Request:**
+
 ```
 DELETE /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 ```
@@ -183,11 +203,13 @@ DELETE /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 ---
 
 ### 6. POST `/api/meals/regenerate` - Regenerate Single Meal (AI)
+
 **File:** `src/pages/api/meals/regenerate.ts`
 
 **Purpose:** Generate a new option for a single meal using AI.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ Request body validation (planInput, mealToRegenerate, existingMealsForDay)
 - ✅ AI generation with context awareness
@@ -196,6 +218,7 @@ DELETE /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef
 - ✅ Error handling (400, 401, 500)
 
 **Example Request:**
+
 ```json
 POST /api/meals/regenerate
 {
@@ -219,11 +242,13 @@ POST /api/meals/regenerate
 ---
 
 ### 7. POST `/api/meal-plans/{planId}/shopping-list` - Generate Shopping List (AI)
+
 **File:** `src/pages/api/meal-plans/[planId]/shopping-list.ts`
 
 **Purpose:** Generate an aggregated shopping list for a meal plan.
 
 **Features:**
+
 - ✅ Authentication required
 - ✅ UUID parameter validation
 - ✅ Authorization check (user owns plan)
@@ -234,11 +259,13 @@ POST /api/meals/regenerate
 - ✅ Error handling (400, 401, 404, 409, 500)
 
 **Example Request:**
+
 ```
 POST /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef/shopping-list
 ```
 
 **Example Response:**
+
 ```json
 {
   "id": "uuid",
@@ -248,9 +275,7 @@ POST /api/meal-plans/a1b2c3d4-e5f6-7890-1234-567890abcdef/shopping-list
       { "item": "Onion", "quantity": "2 large" },
       { "item": "Tomato", "quantity": "500g" }
     ],
-    "Dairy": [
-      { "item": "Milk", "quantity": "1 liter" }
-    ]
+    "Dairy": [{ "item": "Milk", "quantity": "1 liter" }]
   },
   "createdAt": "2025-10-11T10:00:00Z"
 }
@@ -289,23 +314,27 @@ src/
 ## Quality Assurance
 
 ### ✅ Code Quality
+
 - All files pass ESLint (no errors)
 - Consistent code style throughout
 - Proper TypeScript typing
 - Type-safe Supabase operations
 
 ### ✅ Build Status
+
 - Project builds successfully
 - No compilation errors
 - All imports resolved correctly
 
 ### ✅ Security
+
 - Authentication enforced on all endpoints
 - Authorization checks (user owns resources)
 - Input validation using Zod schemas
 - Proper error handling without exposing internals
 
 ### ✅ Best Practices
+
 - `export const prerender = false` on all endpoints
 - HTTP method handlers in uppercase (GET, POST, DELETE)
 - Supabase client from `context.locals`
@@ -314,6 +343,7 @@ src/
 - Console logging for debugging
 
 ### ✅ Error Handling
+
 - Validation errors (400)
 - Authentication errors (401)
 - Not found errors (404)
@@ -341,6 +371,7 @@ SUPABASE_KEY=your_supabase_anon_key
 ## Testing Checklist
 
 ### For Each Endpoint:
+
 - [ ] Test happy path with valid data
 - [ ] Test with invalid data (400)
 - [ ] Test without authentication (401)
@@ -350,6 +381,7 @@ SUPABASE_KEY=your_supabase_anon_key
 - [ ] Test authorization (user cannot access other users' data)
 
 ### Integration Tests:
+
 - [ ] Generate meal plan → Create meal plan → Get details
 - [ ] Create meal plan → Generate shopping list
 - [ ] Create meal plan → Regenerate meal → Update plan
@@ -360,15 +392,15 @@ SUPABASE_KEY=your_supabase_anon_key
 
 ## API Documentation Summary
 
-| Endpoint | Method | Authentication | Purpose |
-|----------|--------|----------------|---------|
-| `/api/meal-plans/generate` | POST | Required | Generate meal plan with AI |
-| `/api/meal-plans` | POST | Required | Save meal plan to database |
-| `/api/meal-plans` | GET | Required | List meal plans (paginated) |
-| `/api/meal-plans/{planId}` | GET | Required | Get meal plan details |
-| `/api/meal-plans/{planId}` | DELETE | Required | Delete meal plan |
-| `/api/meals/regenerate` | POST | Required | Regenerate single meal with AI |
-| `/api/meal-plans/{planId}/shopping-list` | POST | Required | Generate shopping list |
+| Endpoint                                 | Method | Authentication | Purpose                        |
+| ---------------------------------------- | ------ | -------------- | ------------------------------ |
+| `/api/meal-plans/generate`               | POST   | Required       | Generate meal plan with AI     |
+| `/api/meal-plans`                        | POST   | Required       | Save meal plan to database     |
+| `/api/meal-plans`                        | GET    | Required       | List meal plans (paginated)    |
+| `/api/meal-plans/{planId}`               | GET    | Required       | Get meal plan details          |
+| `/api/meal-plans/{planId}`               | DELETE | Required       | Delete meal plan               |
+| `/api/meals/regenerate`                  | POST   | Required       | Regenerate single meal with AI |
+| `/api/meal-plans/{planId}/shopping-list` | POST   | Required       | Generate shopping list         |
 
 ---
 
@@ -387,6 +419,7 @@ SUPABASE_KEY=your_supabase_anon_key
 ## Performance Considerations
 
 ### AI Endpoints (Long Running)
+
 - `/api/meal-plans/generate` - 10-30 seconds
 - `/api/meals/regenerate` - 5-15 seconds
 - `/api/meal-plans/{planId}/shopping-list` - 10-20 seconds
@@ -394,6 +427,7 @@ SUPABASE_KEY=your_supabase_anon_key
 **Recommendation:** Consider adding loading states and websockets for progress updates in production.
 
 ### Database Endpoints (Fast)
+
 - All CRUD operations - < 500ms
 - Pagination optimized with indexes
 
@@ -419,4 +453,3 @@ All 7 REST API endpoints have been successfully implemented following the implem
 **Lines of Code:** ~1,200 lines
 
 ✅ **Status: READY FOR TESTING**
-
