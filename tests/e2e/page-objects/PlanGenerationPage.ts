@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Plan Generation Page
@@ -28,28 +28,28 @@ export class PlanGenerationPage {
     this.page = page;
 
     // Initialize form locators
-    this.planGenerationForm = page.getByTestId('plan-generation-form');
-    this.peopleCountInput = page.getByTestId('people-count-input');
-    this.daysCountInput = page.getByTestId('days-count-input');
-    this.cuisineSelect = page.getByTestId('cuisine-select');
-    this.mealsToPlancheckboxes = page.getByTestId('meals-to-plan-checkboxes');
-    this.calorieTargetsInputs = page.getByTestId('calorie-targets-inputs');
-    this.excludedIngredientInput = page.getByTestId('excluded-ingredient-input');
-    this.addExcludedIngredientButton = page.getByTestId('add-excluded-ingredient-button');
-    this.excludedIngredientsList = page.getByTestId('excluded-ingredients-list');
-    this.generatePlanSubmitButton = page.getByTestId('generate-plan-submit-button');
+    this.planGenerationForm = page.getByTestId("plan-generation-form");
+    this.peopleCountInput = page.getByTestId("people-count-input");
+    this.daysCountInput = page.getByTestId("days-count-input");
+    this.cuisineSelect = page.getByTestId("cuisine-select");
+    this.mealsToPlancheckboxes = page.getByTestId("meals-to-plan-checkboxes");
+    this.calorieTargetsInputs = page.getByTestId("calorie-targets-inputs");
+    this.excludedIngredientInput = page.getByTestId("excluded-ingredient-input");
+    this.addExcludedIngredientButton = page.getByTestId("add-excluded-ingredient-button");
+    this.excludedIngredientsList = page.getByTestId("excluded-ingredients-list");
+    this.generatePlanSubmitButton = page.getByTestId("generate-plan-submit-button");
 
     // Initialize state locators
-    this.loadingState = page.getByTestId('plan-generation-loading-state');
-    this.emptyState = page.getByTestId('plan-generation-empty-state');
-    this.savePlanButton = page.getByTestId('save-plan-button');
+    this.loadingState = page.getByTestId("plan-generation-loading-state");
+    this.emptyState = page.getByTestId("plan-generation-empty-state");
+    this.savePlanButton = page.getByTestId("save-plan-button");
   }
 
   /**
    * Navigate to the plan generation page
    */
   async goto() {
-    await this.page.goto('/generate');
+    await this.page.goto("/generate");
   }
 
   /**
@@ -152,7 +152,7 @@ export class PlanGenerationPage {
    */
   async addExcludedIngredientWithEnter(ingredient: string) {
     await this.excludedIngredientInput.fill(ingredient);
-    await this.excludedIngredientInput.press('Enter');
+    await this.excludedIngredientInput.press("Enter");
   }
 
   /**
@@ -259,19 +259,19 @@ export class PlanGenerationPage {
    * Wait for plan generation to complete
    * @param timeout - Maximum time to wait in milliseconds (default: 5 minutes)
    */
-  async waitForPlanGeneration(timeout: number = 300000) {
+  async waitForPlanGeneration(timeout = 300000) {
     // Wait for loading state to appear
-    await this.loadingState.waitFor({ state: 'visible', timeout: 5000 });
+    await this.loadingState.waitFor({ state: "visible", timeout: 5000 });
 
     // Wait for save button to appear (plan generated)
-    await this.savePlanButton.waitFor({ state: 'visible', timeout });
+    await this.savePlanButton.waitFor({ state: "visible", timeout });
   }
 
   /**
    * Wait for form to be visible
    */
   async waitForFormVisible() {
-    await this.planGenerationForm.waitFor({ state: 'visible' });
+    await this.planGenerationForm.waitFor({ state: "visible" });
   }
 
   /**

@@ -14,6 +14,7 @@ Plik: `src/lib/validation/auth.schemas.ts`
 - **resetPasswordSchema** - walidacja ustawiania nowego hasła (hasło + potwierdzenie)
 
 Wymagania hasła:
+
 - Minimum 8 znaków
 - Co najmniej jedna mała litera (a-z)
 - Co najmniej jedna duża litera (A-Z)
@@ -24,6 +25,7 @@ Wymagania hasła:
 Wszystkie w katalogu `src/components/auth/`:
 
 #### LoginForm.tsx
+
 - Email i hasło
 - Link do "Zapomniałeś hasła?"
 - Link do strony rejestracji
@@ -31,6 +33,7 @@ Wszystkie w katalogu `src/components/auth/`:
 - POST do `/api/auth/login` (do zaimplementowania)
 
 #### RegisterForm.tsx
+
 - Email, hasło i potwierdzenie hasła
 - Wskaźnik siły hasła (PasswordStrengthIndicator)
 - Link do strony logowania
@@ -38,6 +41,7 @@ Wszystkie w katalogu `src/components/auth/`:
 - POST do `/api/auth/register` (do zaimplementowania)
 
 #### ForgotPasswordForm.tsx
+
 - Email
 - Instrukcje dla użytkownika
 - Komunikat sukcesu z dodatkowymi wskazówkami
@@ -45,17 +49,20 @@ Wszystkie w katalogu `src/components/auth/`:
 - POST do `/api/auth/forgot-password` (do zaimplementowania)
 
 #### ResetPasswordForm.tsx
+
 - Nowe hasło i potwierdzenie
 - Wskaźnik siły hasła
 - Komunikat sukcesu z przekierowaniem do logowania
 - POST do `/api/auth/reset-password` (do zaimplementowania)
 
 #### PasswordStrengthIndicator.tsx
+
 - Komponent pomocniczy wyświetlający wymagania hasła
 - Wizualna walidacja w czasie rzeczywistym
 - Używany w RegisterForm i ResetPasswordForm
 
 #### index.ts
+
 - Plik barrel export dla łatwiejszych importów
 
 ### 3. Strony Astro
@@ -63,24 +70,28 @@ Wszystkie w katalogu `src/components/auth/`:
 Wszystkie w katalogu `src/pages/`:
 
 #### login.astro
+
 - Route: `/login`
 - Renderuje LoginForm
 - TODO: Przekierowanie jeśli użytkownik już zalogowany
 - Nawigacja wyłączona (showNav={false})
 
 #### register.astro
+
 - Route: `/register`
 - Renderuje RegisterForm
 - TODO: Przekierowanie jeśli użytkownik już zalogowany
 - Nawigacja wyłączona
 
 #### forgot-password.astro
+
 - Route: `/forgot-password`
 - Renderuje ForgotPasswordForm
 - TODO: Przekierowanie jeśli użytkownik już zalogowany
 - Nawigacja wyłączona
 
 #### reset-password.astro
+
 - Route: `/reset-password`
 - Renderuje ResetPasswordForm
 - TODO: Walidacja tokenu z URL
@@ -91,6 +102,7 @@ Wszystkie w katalogu `src/pages/`:
 #### src/layouts/Layout.astro
 
 Zaktualizowany z:
+
 - Nawigacją świadomą stanu sesji
 - Parametr `showNav` (domyślnie true)
 - Warunkowe renderowanie dla zalogowanych/niezalogowanych użytkowników:
@@ -101,6 +113,7 @@ Zaktualizowany z:
 ## Stylistyka
 
 Wszystkie komponenty używają:
+
 - Shadcn/ui komponenty (Button, Input, Label, Card)
 - Tailwind CSS dla stylowania
 - Lucide React dla ikon
@@ -195,4 +208,3 @@ Formularze będą próbowały wysłać żądania do API (które zwrócą błędy
 - Nawigacja w Layout.astro używa Tailwind classes bezpośrednio (zgodnie z zasadami Astro)
 - TODOs w kodzie wskazują miejsca wymagające integracji z backendem
 - Brak błędów lintingu we wszystkich plikach
-

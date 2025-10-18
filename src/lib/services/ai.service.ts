@@ -37,7 +37,8 @@ export async function generateMealPlan(command: GenerateMealPlanCommand): Promis
         messages: [
           {
             role: "system",
-            content: "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
+            content:
+              "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
           },
           {
             role: "user",
@@ -87,7 +88,8 @@ export async function regenerateSingleMeal(command: RegenerateMealCommand): Prom
         messages: [
           {
             role: "system",
-            content: "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
+            content:
+              "Jesteś profesjonalnym planistą posiłków i dietetykiem. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy przepisów, składników i instrukcje muszą być w języku polskim.",
           },
           {
             role: "user",
@@ -132,7 +134,8 @@ export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingL
         messages: [
           {
             role: "system",
-            content: "Jesteś pomocnym asystentem tworzącym zorganizowane listy zakupów. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy kategorii i składników muszą być w języku polskim.",
+            content:
+              "Jesteś pomocnym asystentem tworzącym zorganizowane listy zakupów. Odpowiadaj wyłącznie w języku polskim. Wszystkie nazwy kategorii i składników muszą być w języku polskim.",
           },
           {
             role: "user",

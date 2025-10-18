@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { GenerateMealPlanCommandSchema } from "../validation/schemas";
 import type {
   GenerateMealPlanCommand,
@@ -15,15 +14,6 @@ import type {
 } from "../../types";
 
 const STORAGE_KEY = "mealPlanGeneratorFormData";
-
-interface HomeAndPlanGenerationViewModel {
-  generationFormState: GenerateMealPlanCommand;
-  workingMealPlan: GeneratedMealPlanDto | null;
-  selectedRecipe: RecipeDto | null;
-  isLoading: boolean;
-  isRegenerating: { day: number; type: string } | null;
-  error: string | null;
-}
 
 const getDefaultFormValues = (): GenerateMealPlanCommand => {
   if (typeof window === "undefined") {

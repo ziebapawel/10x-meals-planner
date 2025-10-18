@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 /**
  * Page Object Model for Login Page
@@ -20,20 +20,20 @@ export class LoginPage {
     this.page = page;
 
     // Initialize locators using data-test-id attributes
-    this.loginForm = page.getByTestId('login-form');
-    this.emailInput = page.getByTestId('login-email-input');
-    this.passwordInput = page.getByTestId('login-password-input');
-    this.submitButton = page.getByTestId('login-submit-button');
-    this.errorMessage = page.getByTestId('login-error-message');
-    this.forgotPasswordLink = page.getByTestId('login-forgot-password-link');
-    this.registerLink = page.getByTestId('login-register-link');
+    this.loginForm = page.getByTestId("login-form");
+    this.emailInput = page.getByTestId("login-email-input");
+    this.passwordInput = page.getByTestId("login-password-input");
+    this.submitButton = page.getByTestId("login-submit-button");
+    this.errorMessage = page.getByTestId("login-error-message");
+    this.forgotPasswordLink = page.getByTestId("login-forgot-password-link");
+    this.registerLink = page.getByTestId("login-register-link");
   }
 
   /**
    * Navigate to the login page
    */
   async goto() {
-    await this.page.goto('/login');
+    await this.page.goto("/login");
   }
 
   /**
@@ -115,7 +115,7 @@ export class LoginPage {
    * Wait for the form to be visible
    */
   async waitForFormVisible() {
-    await this.loginForm.waitFor({ state: 'visible' });
+    await this.loginForm.waitFor({ state: "visible" });
   }
 
   /**
@@ -126,6 +126,6 @@ export class LoginPage {
   async loginAndWaitForNavigation(email: string, password: string) {
     await this.login(email, password);
     // Wait for navigation to complete (redirect to homepage)
-    await this.page.waitForURL('/');
+    await this.page.waitForURL("/");
   }
 }

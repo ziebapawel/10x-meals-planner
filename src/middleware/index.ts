@@ -1,33 +1,8 @@
 import { createSupabaseServerInstance } from "../db/supabase.client.ts";
 import { defineMiddleware } from "astro:middleware";
 
-// Public paths - Auth pages and API endpoints
-const PUBLIC_PATHS = [
-  // Server-Rendered Astro Pages
-  "/",
-  "/login",
-  "/register",
-  "/forgot-password",
-  "/reset-password",
-];
-
 // Protected paths that require authentication
-const PROTECTED_PATHS = [
-  "/generate",
-  "/plans",
-];
-
-const PUBLIC_API_PREFIXES = ["/api/auth/"];
-
-function isPublicPath(pathname: string): boolean {
-  // Check if path is in PUBLIC_PATHS
-  if (PUBLIC_PATHS.includes(pathname)) {
-    return true;
-  }
-
-  // Check if path starts with any PUBLIC_API_PREFIXES
-  return PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix));
-}
+const PROTECTED_PATHS = ["/generate", "/plans"];
 
 function isProtectedPath(pathname: string): boolean {
   // Check if path is in PROTECTED_PATHS
@@ -53,15 +28,15 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
     data: { user },
   } = await supabase.auth.getUser();
 
-    // Store user in locals if authenticated
-    if (user && user.email) {
-      locals.user = {
-        email: user.email,
-        id: user.id,
-      };
-    } else {
-      locals.user = null;
-    }
+  // Store user in locals if authenticated
+  if (user && user.email) {
+    locals.user = {
+      email: user.email,
+      id: user.id,
+    };
+  } else {
+    locals.user = null;
+  }
 
   // If user is authenticated and tries to access auth pages, redirect to homepage (meal plans list)
   if (user && ["/login", "/register"].includes(url.pathname)) {

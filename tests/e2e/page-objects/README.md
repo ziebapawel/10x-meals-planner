@@ -5,6 +5,7 @@ Ten katalog zawiera klasy Page Object Model dla testów E2E aplikacji Meal Plann
 ## Wzorzec Page Object Model
 
 Page Object Model (POM) to wzorzec projektowy, który:
+
 - **Oddziela logikę testów od struktury strony** - zmiany w UI wymagają aktualizacji tylko w jednym miejscu
 - **Zwiększa czytelność testów** - testy są bardziej zrozumiałe i przypominają user stories
 - **Ułatwia utrzymanie** - zmiany w selektorach wymagają aktualizacji tylko w klasach POM
@@ -13,9 +14,11 @@ Page Object Model (POM) to wzorzec projektowy, który:
 ## Dostępne Page Objects
 
 ### LoginPage
+
 Reprezentuje stronę logowania (`/login`)
 
 **Główne funkcje:**
+
 - `goto()` - Nawigacja do strony logowania
 - `fillEmail(email)` - Wypełnienie pola email
 - `fillPassword(password)` - Wypełnienie pola hasła
@@ -26,23 +29,26 @@ Reprezentuje stronę logowania (`/login`)
 - `clickRegister()` - Przejście do strony rejestracji
 
 **Przykład użycia:**
-```typescript
-import { LoginPage } from './page-objects';
 
-test('should login successfully', async ({ page }) => {
+```typescript
+import { LoginPage } from "./page-objects";
+
+test("should login successfully", async ({ page }) => {
   const loginPage = new LoginPage(page);
 
   await loginPage.goto();
-  await loginPage.login('user@example.com', 'password123');
+  await loginPage.login("user@example.com", "password123");
 
-  await expect(page).toHaveURL('/');
+  await expect(page).toHaveURL("/");
 });
 ```
 
 ### MealPlanHistoryPage
+
 Reprezentuje stronę z listą planów posiłków (`/`)
 
 **Główne funkcje:**
+
 - `goto()` - Nawigacja do strony głównej
 - `isHistoryViewVisible()` - Sprawdzenie widoczności widoku historii
 - `isEmptyState()` - Sprawdzenie czy lista planów jest pusta
@@ -53,10 +59,11 @@ Reprezentuje stronę z listą planów posiłków (`/`)
 - `getMealPlanCardsCount()` - Liczba widocznych kart planów
 
 **Przykład użycia:**
-```typescript
-import { MealPlanHistoryPage } from './page-objects';
 
-test('should display meal plans', async ({ page }) => {
+```typescript
+import { MealPlanHistoryPage } from "./page-objects";
+
+test("should display meal plans", async ({ page }) => {
   const historyPage = new MealPlanHistoryPage(page);
 
   await historyPage.goto();
@@ -70,13 +77,17 @@ test('should display meal plans', async ({ page }) => {
 ## Konwencje
 
 ### Lokalizacja elementów
+
 Wszystkie elementy są lokalizowane przez atrybuty `data-test-id`:
+
 ```typescript
-this.emailInput = page.getByTestId('login-email-input');
+this.emailInput = page.getByTestId("login-email-input");
 ```
 
 ### Struktura klasy
+
 Każda klasa POM powinna zawierać:
+
 1. **Właściwość `page`** - instancja Playwright Page
 2. **Lokatory** - wszystkie elementy strony jako readonly Locator
 3. **Konstruktor** - inicjalizacja lokatorów
@@ -86,6 +97,7 @@ Każda klasa POM powinna zawierać:
 7. **Metody pomocnicze** - złożone operacje łączące wiele akcji
 
 ### Nazewnictwo
+
 - Klasy: **PascalCase** z sufiksem "Page" (np. `LoginPage`)
 - Lokatory: **camelCase** opisujące element (np. `emailInput`, `submitButton`)
 - Metody: **camelCase** z czasownikami (np. `clickSubmit`, `fillEmail`)
@@ -94,7 +106,9 @@ Każda klasa POM powinna zawierać:
 ## Best Practices
 
 ### 1. Nie używaj asercji w Page Objects
+
 ❌ Źle:
+
 ```typescript
 async login(email: string, password: string) {
   await this.fillEmail(email);
@@ -105,6 +119,7 @@ async login(email: string, password: string) {
 ```
 
 ✅ Dobrze:
+
 ```typescript
 async login(email: string, password: string) {
   await this.fillEmail(email);
@@ -114,7 +129,9 @@ async login(email: string, password: string) {
 ```
 
 ### 2. Zwracaj wartości, które mogą być sprawdzane w testach
+
 ✅ Dobrze:
+
 ```typescript
 async getErrorMessageText(): Promise<string | null> {
   if (await this.isErrorMessageVisible()) {
@@ -125,7 +142,9 @@ async getErrorMessageText(): Promise<string | null> {
 ```
 
 ### 3. Używaj metod pomocniczych dla złożonych operacji
+
 ✅ Dobrze:
+
 ```typescript
 async loginAndWaitForNavigation(email: string, password: string) {
   await this.login(email, password);
@@ -134,6 +153,7 @@ async loginAndWaitForNavigation(email: string, password: string) {
 ```
 
 ### 4. Dokumentuj metody JSDoc
+
 ```typescript
 /**
  * Perform complete login flow

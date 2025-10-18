@@ -298,7 +298,13 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
               <p className="text-muted-foreground">Utworzony {new Date(plan.created_at).toLocaleDateString("pl-PL")}</p>
             </div>
           </div>
-          <Button onClick={handleDeletePlan} variant="destructive" size="sm" disabled={isDeleting} data-testid="delete-plan-button">
+          <Button
+            onClick={handleDeletePlan}
+            variant="destructive"
+            size="sm"
+            disabled={isDeleting}
+            data-testid="delete-plan-button"
+          >
             <Trash2 className="w-4 h-4 mr-2" />
             {isDeleting ? "Usuwanie..." : "Usuń plan"}
           </Button>
@@ -352,7 +358,12 @@ export function MealPlanDetailView({ planId }: MealPlanDetailViewProps) {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Plan posiłków</h2>
             {!plan.shoppingList && (
-              <Button onClick={handleGenerateShoppingList} disabled={isGeneratingShoppingList} className="gap-2" data-testid="generate-shopping-list-button">
+              <Button
+                onClick={handleGenerateShoppingList}
+                disabled={isGeneratingShoppingList}
+                className="gap-2"
+                data-testid="generate-shopping-list-button"
+              >
                 <ShoppingCart className="w-4 h-4" />
                 {isGeneratingShoppingList ? "Generowanie..." : "Generuj listę zakupów"}
               </Button>

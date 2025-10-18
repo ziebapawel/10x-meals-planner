@@ -25,6 +25,7 @@ OPENROUTER_API_KEY=your-openrouter-api-key
 ```
 
 **Gdzie znaleźć wartości Supabase:**
+
 1. Zaloguj się do [Supabase Dashboard](https://app.supabase.com)
 2. Wybierz swój projekt
 3. Przejdź do **Settings** → **API**
@@ -65,7 +66,7 @@ Jeśli chcesz włączyć funkcję resetowania hasła:
 W Supabase Dashboard, w sekcji **Authentication** → **URL Configuration**, ustaw:
 
 - **Site URL**: `http://localhost:4321` (dla developmentu) lub Twój URL produkcyjny
-- **Redirect URLs**: 
+- **Redirect URLs**:
   - `http://localhost:4321`
   - `http://localhost:4321/`
   - `http://localhost:4321/reset-password` (dla resetowania hasła)
@@ -146,6 +147,7 @@ npm run dev
 ## 📁 Zaimplementowane komponenty
 
 ### Backend
+
 - ✅ `src/db/supabase.client.ts` - Klient SSR Supabase z zarządzaniem ciasteczkami
 - ✅ `src/middleware/index.ts` - Middleware z session management i route protection
 - ✅ `src/lib/services/auth-error.service.ts` - Serwis tłumaczenia błędów auth na język polski
@@ -156,6 +158,7 @@ npm run dev
 - ✅ `src/pages/api/auth/reset-password.ts` - Endpoint resetowania hasła (ustawianie nowego)
 
 ### Frontend
+
 - ✅ `src/pages/login.astro` - Strona logowania z redirect logic
 - ✅ `src/pages/register.astro` - Strona rejestracji z redirect logic
 - ✅ `src/pages/forgot-password.astro` - Strona resetowania hasła
@@ -170,6 +173,7 @@ npm run dev
 - ✅ `src/layouts/Layout.astro` - Layout z conditional navigation
 
 ### Konfiguracja
+
 - ✅ `src/env.d.ts` - Typy TypeScript dla zmiennych środowiskowych i `Astro.locals`
 - ✅ `.env.example` - Szablon zmiennych środowiskowych
 
@@ -191,31 +195,37 @@ Zaimplementowane zabezpieczenia zgodnie z best practices:
 ## 🛠️ Rozwiązywanie problemów
 
 ### "Invalid login credentials"
+
 - Sprawdź czy email i hasło są poprawne
 - Upewnij się, że użytkownik jest zarejestrowany
 - Jeśli włączona jest weryfikacja email, sprawdź czy email został potwierdzony
 
 ### "Ten adres email jest już zajęty"
+
 - Email jest już zarejestrowany w systemie
 - Użyj innego adresu email lub zaloguj się na istniejące konto
 
 ### "Session expired" / Ciągłe wylogowywanie
+
 - Sprawdź czy `SUPABASE_URL` i `SUPABASE_ANON_KEY` są poprawne
 - Sprawdź czy Redirect URLs w Supabase Dashboard są prawidłowo skonfigurowane
 - Sprawdź cookies w przeglądarce (DevTools → Application → Cookies)
 
 ### "Link resetujący hasło wygasł"
+
 - Linki resetujące hasło mają ograniczony czas ważności (domyślnie 1 godzina)
 - Poproś o nowy link resetujący
 - Sprawdź czy email nie trafił do folderu spam
 
 ### "Nie otrzymałem emaila resetującego"
+
 - Sprawdź folder spam/junk
 - Upewnij się, że podałeś prawidłowy adres email
 - Sprawdź konfigurację SMTP w Supabase Dashboard
 - Spróbuj ponownie za kilka minut (rate limiting)
 
 ### Middleware redirect loop
+
 - Sprawdź czy `PUBLIC_PATHS` w middleware zawiera wszystkie publiczne trasy
 - Upewnij się, że strona główna (`/`) jest w `PUBLIC_PATHS`
 
@@ -245,6 +255,7 @@ Po pomyślnej konfiguracji możesz:
 ## 🎯 Zaimplementowane funkcjonalności
 
 ### ✅ Kompletny system autentykacji
+
 - **Rejestracja** - nowi użytkownicy mogą tworzyć konta
 - **Logowanie** - uwierzytelnianie z walidacją
 - **Wylogowanie** - bezpieczne zakończenie sesji
@@ -253,6 +264,7 @@ Po pomyślnej konfiguracji możesz:
 - **Conditional rendering** - różne treści dla zalogowanych/niezalogowanych
 
 ### ✅ User Experience
+
 - **Landing page** - atrakcyjna strona powitalna dla nowych użytkowników
 - **Empty state** - zachęta do stworzenia pierwszego planu dla zalogowanych
 - **Error handling** - przetłumaczone komunikaty błędów w języku polskim
@@ -260,6 +272,7 @@ Po pomyślnej konfiguracji możesz:
 - **Success feedback** - potwierdzenia udanych operacji
 
 ### ✅ Bezpieczeństwo
+
 - **HTTP-only cookies** - ciasteczka niedostępne dla JavaScript
 - **Server-side validation** - walidacja po stronie serwera
 - **CSRF protection** - SameSite cookies
@@ -271,4 +284,3 @@ Po pomyślnej konfiguracji możesz:
 **Status:** ✅ Pełna implementacja autentykacji zakończona
 **Data:** 2025-10-14
 **Wersja:** 2.0 (zaktualizowana po implementacji wszystkich funkcjonalności)
-

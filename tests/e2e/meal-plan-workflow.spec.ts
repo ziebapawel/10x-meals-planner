@@ -43,8 +43,13 @@ test.describe("Complete Meal Plan Workflow", () => {
     await loginPage.waitForFormVisible();
 
     // Act: Perform login
-    const testEmail = process.env.E2E_USERNAME!;
-    const testPassword = process.env.E2E_PASSWORD!;
+    const testEmail = process.env.E2E_USERNAME;
+    const testPassword = process.env.E2E_PASSWORD;
+
+    if (!testEmail || !testPassword) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD environment variables are required");
+    }
+
     await loginPage.login(testEmail, testPassword);
     await page.waitForLoadState("networkidle");
 
@@ -165,11 +170,15 @@ test.describe("Complete Meal Plan Workflow", () => {
     await expect(historyPage.plansGrid).toBeVisible();
 
     // Assert: The newly created plan should exist in the list
-    const hasPlan = await historyPage.hasMealPlanCard(planId!);
+    if (!planId) {
+      throw new Error("Plan ID is null");
+    }
+
+    const hasPlan = await historyPage.hasMealPlanCard(planId);
     expect(hasPlan).toBeTruthy();
 
     // Assert: Should be able to click on the plan card
-    const planCard = historyPage.getMealPlanCard(planId!);
+    const planCard = historyPage.getMealPlanCard(planId);
     await expect(planCard).toBeVisible();
   });
 
@@ -177,7 +186,14 @@ test.describe("Complete Meal Plan Workflow", () => {
     // Arrange: Login and navigate to generation page
     await loginPage.goto();
     await page.waitForLoadState("networkidle");
-    await loginPage.loginAndWaitForNavigation(process.env.E2E_USERNAME!, process.env.E2E_PASSWORD!);
+    const testEmail = process.env.E2E_USERNAME;
+    const testPassword = process.env.E2E_PASSWORD;
+
+    if (!testEmail || !testPassword) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD environment variables are required");
+    }
+
+    await loginPage.loginAndWaitForNavigation(testEmail, testPassword);
     await page.waitForLoadState("networkidle");
     await historyPage.navigateToCreatePlan();
     await expect(generationPage.planGenerationForm).toBeVisible();
@@ -212,7 +228,14 @@ test.describe("Complete Meal Plan Workflow", () => {
     // Arrange: Login and navigate to generation page
     await loginPage.goto();
     await page.waitForLoadState("networkidle");
-    await loginPage.loginAndWaitForNavigation(process.env.E2E_USERNAME!, process.env.E2E_PASSWORD!);
+    const testEmail = process.env.E2E_USERNAME;
+    const testPassword = process.env.E2E_PASSWORD;
+
+    if (!testEmail || !testPassword) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD environment variables are required");
+    }
+
+    await loginPage.loginAndWaitForNavigation(testEmail, testPassword);
     await page.waitForLoadState("networkidle");
     await historyPage.navigateToCreatePlan();
     await expect(generationPage.planGenerationForm).toBeVisible();
@@ -241,7 +264,14 @@ test.describe("Complete Meal Plan Workflow", () => {
     // Arrange: Login and navigate to generation page
     await loginPage.goto();
     await page.waitForLoadState("networkidle");
-    await loginPage.loginAndWaitForNavigation(process.env.E2E_USERNAME!, process.env.E2E_PASSWORD!);
+    const testEmail = process.env.E2E_USERNAME;
+    const testPassword = process.env.E2E_PASSWORD;
+
+    if (!testEmail || !testPassword) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD environment variables are required");
+    }
+
+    await loginPage.loginAndWaitForNavigation(testEmail, testPassword);
     await page.waitForLoadState("networkidle");
     await historyPage.navigateToCreatePlan();
     await expect(generationPage.planGenerationForm).toBeVisible();
@@ -276,7 +306,14 @@ test.describe("Complete Meal Plan Workflow", () => {
     // Arrange: Login and navigate to generation page
     await loginPage.goto();
     await page.waitForLoadState("networkidle");
-    await loginPage.loginAndWaitForNavigation(process.env.E2E_USERNAME!, process.env.E2E_PASSWORD!);
+    const testEmail = process.env.E2E_USERNAME;
+    const testPassword = process.env.E2E_PASSWORD;
+
+    if (!testEmail || !testPassword) {
+      throw new Error("E2E_USERNAME and E2E_PASSWORD environment variables are required");
+    }
+
+    await loginPage.loginAndWaitForNavigation(testEmail, testPassword);
     await page.waitForLoadState("networkidle");
     await historyPage.navigateToCreatePlan();
     await expect(generationPage.planGenerationForm).toBeVisible();

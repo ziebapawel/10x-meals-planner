@@ -78,7 +78,13 @@ export function HomeAndPlanGenerationView() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold">Twój Plan Posiłków</h2>
-                <Button onClick={onSavePlan} disabled={isLoading} size="lg" className="gap-2" data-testid="save-plan-button">
+                <Button
+                  onClick={onSavePlan}
+                  disabled={isLoading}
+                  size="lg"
+                  className="gap-2"
+                  data-testid="save-plan-button"
+                >
                   <Save />
                   {isLoading ? "Zapisywanie..." : "Zapisz plan"}
                 </Button>
@@ -99,13 +105,16 @@ export function HomeAndPlanGenerationView() {
 
           {/* Empty State */}
           {!workingMealPlan && !isLoading && (
-            <Card className="border-dashed border-2 border-primary/30 card-elevated" data-testid="plan-generation-empty-state">
+            <Card
+              className="border-dashed border-2 border-primary/30 card-elevated"
+              data-testid="plan-generation-empty-state"
+            >
               <CardContent className="py-12 text-center">
                 <ChefHat className="size-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Zacznij planować posiłki</h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Wypełnij formularz powyżej i kliknij "Generuj plan posiłków", aby stworzyć spersonalizowany plan
-                  żywieniowy dostosowany do Twoich potrzeb.
+                  Wypełnij formularz powyżej i kliknij &ldquo;Generuj plan posiłków&rdquo;, aby stworzyć
+                  spersonalizowany plan żywieniowy dostosowany do Twoich potrzeb.
                 </p>
               </CardContent>
             </Card>

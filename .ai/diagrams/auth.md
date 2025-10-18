@@ -1,7 +1,9 @@
 <authentication_analysis>
+
 ### 1. Authentication Flows
 
 Based on the project documentation, the primary authentication flows are:
+
 - **User Registration**: New users sign up using an email and password.
 - **User Login**: Existing users sign in to access their saved data.
 - **User Logout**: Authenticated users sign out, terminating their session.
@@ -19,6 +21,7 @@ Based on the project documentation, the primary authentication flows are:
 ### 3. Token Verification and Refresh Process
 
 The token management process is handled server-side, leveraging the `@supabase/ssr` library for security and efficiency:
+
 1.  **Initial Request**: The Browser sends a request to the Astro server, including auth tokens stored in cookies.
 2.  **Middleware Interception**: The Astro middleware intercepts the request.
 3.  **Session Retrieval**: The middleware uses `supabase.auth.getSession()` to retrieve the user session from the cookies. This function automatically communicates with Supabase Auth to validate the Access Token.
@@ -32,9 +35,10 @@ The token management process is handled server-side, leveraging the `@supabase/s
 - **Registration**: The flow is similar to login, but targets the `/api/auth/register` endpoint and uses Supabase's `signUp` method.
 - **Accessing a Protected Page**: The Browser requests a protected URL. The Middleware validates the session from cookies. If valid, the page is rendered. If invalid, the Middleware triggers a redirect to `/login`.
 - **Logout**: The user initiates a logout. The Browser POSTs to `/api/auth/logout`. The Astro API calls Supabase's `signOut` method, which invalidates the session and instructs the browser to clear the auth cookies.
-</authentication_analysis>
+  </authentication_analysis>
 
 <mermaid_diagram>
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -52,7 +56,7 @@ sequenceDiagram
     activate Supabase Auth
     Supabase Auth-->>Astro API: { session, user } or { error }
     deactivate Supabase Auth
-    
+
     alt Login Successful
         Astro API->>Browser: 200 OK (Set-Cookie: sb-auth-token)
         Browser->>Browser: Redirect to Homepage (/)
@@ -98,7 +102,7 @@ sequenceDiagram
     deactivate Middleware
 
     Note over Browser, Supabase Auth: 5. User Logout Flow
-    
+
     Browser->>Astro API: POST /api/auth/logout
     activate Astro API
     Astro API->>Supabase Auth: signOut()
@@ -110,4 +114,5 @@ sequenceDiagram
     Browser->>Browser: Redirect to Homepage (/)
 
 ```
+
 </mermaid_diagram>

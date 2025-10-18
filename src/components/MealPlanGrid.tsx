@@ -9,7 +9,13 @@ interface MealPlanGridProps {
   showRegenerate?: boolean;
 }
 
-export function MealPlanGrid({ plan, onRegenerate, onViewDetails, regeneratingMeal, showRegenerate = true }: MealPlanGridProps) {
+export function MealPlanGrid({
+  plan,
+  onRegenerate,
+  onViewDetails,
+  regeneratingMeal,
+  showRegenerate = true,
+}: MealPlanGridProps) {
   if (!plan || !plan.plan || !plan.plan.days) {
     return null;
   }

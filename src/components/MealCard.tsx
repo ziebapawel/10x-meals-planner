@@ -15,20 +15,26 @@ interface MealCardProps {
 // Helper function to get meal type emoji and Polish name
 const getMealTypeInfo = (type: string): { emoji: string; name: string; color: string } => {
   const mealTypes: Record<string, { emoji: string; name: string; color: string }> = {
-    'breakfast': { emoji: '🌅', name: 'Śniadanie', color: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
-    'lunch': { emoji: '☀️', name: 'Obiad', color: 'bg-orange-50 text-orange-700 border-orange-200' },
-    'dinner': { emoji: '🌙', name: 'Kolacja', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-    'snack': { emoji: '🍎', name: 'Przekąska', color: 'bg-green-50 text-green-700 border-green-200' },
+    breakfast: { emoji: "🌅", name: "Śniadanie", color: "bg-yellow-50 text-yellow-700 border-yellow-200" },
+    lunch: { emoji: "☀️", name: "Obiad", color: "bg-orange-50 text-orange-700 border-orange-200" },
+    dinner: { emoji: "🌙", name: "Kolacja", color: "bg-blue-50 text-blue-700 border-blue-200" },
+    snack: { emoji: "🍎", name: "Przekąska", color: "bg-green-50 text-green-700 border-green-200" },
   };
-  return mealTypes[type] || { emoji: '🍽️', name: type, color: 'bg-gray-50 text-gray-700 border-gray-200' };
+  return mealTypes[type] || { emoji: "🍽️", name: type, color: "bg-gray-50 text-gray-700 border-gray-200" };
 };
 
-
-export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegenerating, showRegenerate = true }: MealCardProps) {
+export function MealCard({
+  meal,
+  day,
+  onRegenerate,
+  onViewDetails,
+  isRegenerating,
+  showRegenerate = true,
+}: MealCardProps) {
   const mealTypeInfo = getMealTypeInfo(meal.type);
 
   return (
-    <Card 
+    <Card
       className="group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer animate-fade-in border-2 hover:border-primary/20"
       onClick={() => onViewDetails(meal.recipe)}
       role="button"
@@ -44,7 +50,9 @@ export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegeneratin
       <CardHeader className="pb-3">
         <div className="space-y-3">
           {/* Meal Type Badge */}
-          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${mealTypeInfo.color}`}>
+          <div
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${mealTypeInfo.color}`}
+          >
             <span className="text-sm">{mealTypeInfo.emoji}</span>
             <span>{mealTypeInfo.name}</span>
           </div>
@@ -55,7 +63,7 @@ export function MealCard({ meal, day, onRegenerate, onViewDetails, isRegeneratin
           </CardTitle>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         {/* Regenerate Button */}
         {showRegenerate && (

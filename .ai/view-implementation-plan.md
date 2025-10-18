@@ -83,28 +83,30 @@ export const GenerateMealPlanCommandSchema = z.object({
 // Schema dla tworzenia planu
 export const CreateMealPlanCommandSchema = z.object({
   planInput: GenerateMealPlanCommandSchema,
-  meals: z.array(
-    z.object({
-      day: z.number().int().min(1),
-      type: z.string().min(1),
-      recipeData: z.object({
-        name: z.string().min(1),
-        ingredients: z.array(
-          z.object({
-            item: z.string(),
-            quantity: z.string(),
-          })
-        ),
-        instructions: z.array(z.string()),
-        portions: z.array(
-          z.object({
-            person: z.number().int().min(1),
-            grams: z.number().int().min(1),
-          })
-        ),
-      }),
-    })
-  ).min(1),
+  meals: z
+    .array(
+      z.object({
+        day: z.number().int().min(1),
+        type: z.string().min(1),
+        recipeData: z.object({
+          name: z.string().min(1),
+          ingredients: z.array(
+            z.object({
+              item: z.string(),
+              quantity: z.string(),
+            })
+          ),
+          instructions: z.array(z.string()),
+          portions: z.array(
+            z.object({
+              person: z.number().int().min(1),
+              grams: z.number().int().min(1),
+            })
+          ),
+        }),
+      })
+    )
+    .min(1),
 });
 
 // Schema dla regeneracji pojedynczego posiłku
@@ -169,9 +171,7 @@ if (!OPENROUTER_API_KEY) {
 /**
  * Generates a complete meal plan using AI
  */
-export async function generateMealPlan(
-  command: GenerateMealPlanCommand
-): Promise<GeneratedMealPlanDto> {
+export async function generateMealPlan(command: GenerateMealPlanCommand): Promise<GeneratedMealPlanDto> {
   const prompt = buildMealPlanPrompt(command);
 
   try {
@@ -199,9 +199,7 @@ export async function generateMealPlan(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        `OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`
-      );
+      throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
@@ -223,9 +221,7 @@ export async function generateMealPlan(
 /**
  * Regenerates a single meal using AI
  */
-export async function regenerateSingleMeal(
-  command: RegenerateMealCommand
-): Promise<RegeneratedMealDto> {
+export async function regenerateSingleMeal(command: RegenerateMealCommand): Promise<RegeneratedMealDto> {
   const prompt = buildRegenerateMealPrompt(command);
 
   try {
@@ -253,9 +249,7 @@ export async function regenerateSingleMeal(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        `OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`
-      );
+      throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
@@ -272,9 +266,7 @@ export async function regenerateSingleMeal(
 /**
  * Aggregates and categorizes shopping list using AI
  */
-export async function aggregateShoppingList(
-  meals: MealDto[]
-): Promise<ShoppingListContent> {
+export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingListContent> {
   const prompt = buildShoppingListPrompt(meals);
 
   try {
@@ -289,8 +281,7 @@ export async function aggregateShoppingList(
         messages: [
           {
             role: "system",
-            content:
-              "You are a helpful assistant that creates organized shopping lists.",
+            content: "You are a helpful assistant that creates organized shopping lists.",
           },
           {
             role: "user",
@@ -303,9 +294,7 @@ export async function aggregateShoppingList(
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(
-        `OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`
-      );
+      throw new Error(`OpenRouter API error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
@@ -315,9 +304,7 @@ export async function aggregateShoppingList(
     return parsedList;
   } catch (error) {
     console.error("Error aggregating shopping list with AI:", error);
-    throw new Error(
-      "Failed to generate shopping list. Please try again later."
-    );
+    throw new Error("Failed to generate shopping list. Please try again later.");
   }
 }
 
@@ -390,9 +377,7 @@ Return a JSON object with this structure:
 
 function buildShoppingListPrompt(meals: MealDto[]): string {
   const allIngredients = meals.flatMap((meal) =>
-    meal.recipe_data.ingredients.map(
-      (ing) => `${ing.item}: ${ing.quantity}`
-    )
+    meal.recipe_data.ingredients.map((ing) => `${ing.item}: ${ing.quantity}`)
   );
 
   return `Create an organized shopping list from these ingredients:
@@ -471,9 +456,7 @@ export async function createMealPlan(
     recipe_data: meal.recipeData,
   }));
 
-  const { error: mealsError } = await supabase
-    .from("meals")
-    .insert(mealsToInsert);
+  const { error: mealsError } = await supabase.from("meals").insert(mealsToInsert);
 
   if (mealsError) {
     // Rollback: delete the meal plan
@@ -593,11 +576,7 @@ export async function getMealPlanDetails(
 /**
  * Deletes a meal plan and all associated data
  */
-export async function deleteMealPlan(
-  supabase: SupabaseClient,
-  userId: string,
-  planId: string
-): Promise<boolean> {
+export async function deleteMealPlan(supabase: SupabaseClient, userId: string, planId: string): Promise<boolean> {
   // First check if plan exists and belongs to user
   const { data: plan, error: checkError } = await supabase
     .from("meal_plans")
@@ -615,11 +594,7 @@ export async function deleteMealPlan(
   }
 
   // Delete meal plan (cascade will handle meals and shopping_lists)
-  const { error: deleteError } = await supabase
-    .from("meal_plans")
-    .delete()
-    .eq("id", planId)
-    .eq("user_id", userId);
+  const { error: deleteError } = await supabase.from("meal_plans").delete().eq("id", planId).eq("user_id", userId);
 
   if (deleteError) {
     console.error("Error deleting meal plan:", deleteError);
@@ -685,10 +660,7 @@ export async function generateShoppingList(
   }
 
   // Get all meals for the plan
-  const { data: meals, error: mealsError } = await supabase
-    .from("meals")
-    .select("*")
-    .eq("plan_id", planId);
+  const { data: meals, error: mealsError } = await supabase.from("meals").select("*").eq("plan_id", planId);
 
   if (mealsError) {
     console.error("Error getting meals:", mealsError);
@@ -786,11 +758,7 @@ export async function generateShoppingList(
                 { "item": "Eggs", "quantity": "4 large" },
                 { "item": "Spinach", "quantity": "100g" }
               ],
-              "instructions": [
-                "Heat pan",
-                "Cook eggs",
-                "Add spinach"
-              ],
+              "instructions": ["Heat pan", "Cook eggs", "Add spinach"],
               "portions": [
                 { "person": 1, "grams": 250 },
                 { "person": 2, "grams": 210 }
@@ -829,13 +797,13 @@ export async function generateShoppingList(
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Brak wymaganych pól | 400 | `{ "error": "Validation failed", "details": [...] }` |
-| Nieprawidłowy format danych | 400 | `{ "error": "Invalid input format" }` |
-| Brak sesji użytkownika | 401 | `{ "error": "Unauthorized" }` |
-| Błąd API OpenRouter | 500 | `{ "error": "Failed to generate meal plan" }` |
-| Timeout AI | 500 | `{ "error": "Request timeout. Please try again." }` |
+| Scenariusz                  | Kod HTTP | Response Body                                        |
+| --------------------------- | -------- | ---------------------------------------------------- |
+| Brak wymaganych pól         | 400      | `{ "error": "Validation failed", "details": [...] }` |
+| Nieprawidłowy format danych | 400      | `{ "error": "Invalid input format" }`                |
+| Brak sesji użytkownika      | 401      | `{ "error": "Unauthorized" }`                        |
+| Błąd API OpenRouter         | 500      | `{ "error": "Failed to generate meal plan" }`        |
+| Timeout AI                  | 500      | `{ "error": "Request timeout. Please try again." }`  |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -873,12 +841,12 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -912,10 +880,9 @@ export const POST: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in generate meal plan endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1020,13 +987,13 @@ export const POST: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowy payload | 400 | `{ "error": "Validation failed", "details": [...] }` |
-| Pusta tablica meals | 400 | `{ "error": "At least one meal is required" }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Błąd insertu meal_plans | 500 | `{ "error": "Failed to create meal plan" }` |
-| Błąd insertu meals | 500 | `{ "error": "Failed to create meals for the plan" }` |
+| Scenariusz              | Kod HTTP | Response Body                                        |
+| ----------------------- | -------- | ---------------------------------------------------- |
+| Nieprawidłowy payload   | 400      | `{ "error": "Validation failed", "details": [...] }` |
+| Pusta tablica meals     | 400      | `{ "error": "At least one meal is required" }`       |
+| Brak sesji              | 401      | `{ "error": "Unauthorized" }`                        |
+| Błąd insertu meal_plans | 500      | `{ "error": "Failed to create meal plan" }`          |
+| Błąd insertu meals      | 500      | `{ "error": "Failed to create meals for the plan" }` |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1064,12 +1031,12 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -1095,11 +1062,7 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Create meal plan
-    const mealPlan = await createMealPlan(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const mealPlan = await createMealPlan(supabase, user.id, validationResult.data);
 
     return new Response(JSON.stringify(mealPlan), {
       status: 201,
@@ -1107,10 +1070,9 @@ export const POST: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in create meal plan endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1194,11 +1156,11 @@ export const POST: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowy page/pageSize | 400 | `{ "error": "Invalid pagination parameters" }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Błąd bazy danych | 500 | `{ "error": "Failed to list meal plans" }` |
+| Scenariusz                  | Kod HTTP | Response Body                                  |
+| --------------------------- | -------- | ---------------------------------------------- |
+| Nieprawidłowy page/pageSize | 400      | `{ "error": "Invalid pagination parameters" }` |
+| Brak sesji                  | 401      | `{ "error": "Unauthorized" }`                  |
+| Błąd bazy danych            | 500      | `{ "error": "Failed to list meal plans" }`     |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1227,12 +1189,12 @@ export const POST: APIRoute = async (context) => {
 export const GET: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -1263,12 +1225,7 @@ export const GET: APIRoute = async (context) => {
     }
 
     // List meal plans
-    const result = await listMealPlans(
-      supabase,
-      user.id,
-      validationResult.data.page,
-      validationResult.data.pageSize
-    );
+    const result = await listMealPlans(supabase, user.id, validationResult.data.page, validationResult.data.pageSize);
 
     return new Response(JSON.stringify(result), {
       status: 200,
@@ -1276,10 +1233,9 @@ export const GET: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in list meal plans endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1375,13 +1331,13 @@ export const GET: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowy UUID | 400 | `{ "error": "Invalid plan ID format" }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Plan nie istnieje | 404 | `{ "error": "Meal plan not found" }` |
-| Plan nie należy do usera | 404 | `{ "error": "Meal plan not found" }` |
-| Błąd bazy danych | 500 | `{ "error": "Failed to get meal plan" }` |
+| Scenariusz               | Kod HTTP | Response Body                            |
+| ------------------------ | -------- | ---------------------------------------- |
+| Nieprawidłowy UUID       | 400      | `{ "error": "Invalid plan ID format" }`  |
+| Brak sesji               | 401      | `{ "error": "Unauthorized" }`            |
+| Plan nie istnieje        | 404      | `{ "error": "Meal plan not found" }`     |
+| Plan nie należy do usera | 404      | `{ "error": "Meal plan not found" }`     |
+| Błąd bazy danych         | 500      | `{ "error": "Failed to get meal plan" }` |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1421,12 +1377,12 @@ export const prerender = false;
 export const GET: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -1439,21 +1395,14 @@ export const GET: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Get meal plan details
-    const mealPlan = await getMealPlanDetails(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const mealPlan = await getMealPlanDetails(supabase, user.id, validationResult.data);
 
     if (!mealPlan) {
       return new Response(JSON.stringify({ error: "Meal plan not found" }), {
@@ -1468,10 +1417,9 @@ export const GET: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in get meal plan endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1506,6 +1454,7 @@ export const GET: APIRoute = async (context) => {
 ### 4. Szczegóły odpowiedzi
 
 **Success Response (204 No Content):**
+
 - Brak response body
 - Status 204
 
@@ -1534,13 +1483,13 @@ export const GET: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowy UUID | 400 | `{ "error": "Invalid plan ID format" }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Plan nie istnieje | 404 | `{ "error": "Meal plan not found" }` |
-| Plan nie należy do usera | 404 | `{ "error": "Meal plan not found" }` |
-| Błąd bazy danych | 500 | `{ "error": "Failed to delete meal plan" }` |
+| Scenariusz               | Kod HTTP | Response Body                               |
+| ------------------------ | -------- | ------------------------------------------- |
+| Nieprawidłowy UUID       | 400      | `{ "error": "Invalid plan ID format" }`     |
+| Brak sesji               | 401      | `{ "error": "Unauthorized" }`               |
+| Plan nie istnieje        | 404      | `{ "error": "Meal plan not found" }`        |
+| Plan nie należy do usera | 404      | `{ "error": "Meal plan not found" }`        |
+| Błąd bazy danych         | 500      | `{ "error": "Failed to delete meal plan" }` |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1571,12 +1520,12 @@ export const GET: APIRoute = async (context) => {
 export const DELETE: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -1589,21 +1538,14 @@ export const DELETE: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Delete meal plan
-    const deleted = await deleteMealPlan(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const deleted = await deleteMealPlan(supabase, user.id, validationResult.data);
 
     if (!deleted) {
       return new Response(JSON.stringify({ error: "Meal plan not found" }), {
@@ -1617,10 +1559,9 @@ export const DELETE: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in delete meal plan endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1714,11 +1655,7 @@ export const DELETE: APIRoute = async (context) => {
       { "item": "Chicken breast", "quantity": "400g" },
       { "item": "Pasta", "quantity": "300g" }
     ],
-    "instructions": [
-      "Cook pasta",
-      "Prepare sauce",
-      "Combine"
-    ],
+    "instructions": ["Cook pasta", "Prepare sauce", "Combine"],
     "portions": [
       { "person": 1, "grams": 450 },
       { "person": 2, "grams": 380 }
@@ -1752,13 +1689,13 @@ export const DELETE: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowa struktura | 400 | `{ "error": "Validation failed", "details": [...] }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Błąd API OpenRouter | 500 | `{ "error": "Failed to regenerate meal" }` |
-| Timeout AI | 500 | `{ "error": "Request timeout. Please try again." }` |
-| Nieprawidłowa odpowiedź AI | 500 | `{ "error": "Invalid AI response" }` |
+| Scenariusz                 | Kod HTTP | Response Body                                        |
+| -------------------------- | -------- | ---------------------------------------------------- |
+| Nieprawidłowa struktura    | 400      | `{ "error": "Validation failed", "details": [...] }` |
+| Brak sesji                 | 401      | `{ "error": "Unauthorized" }`                        |
+| Błąd API OpenRouter        | 500      | `{ "error": "Failed to regenerate meal" }`           |
+| Timeout AI                 | 500      | `{ "error": "Request timeout. Please try again." }`  |
+| Nieprawidłowa odpowiedź AI | 500      | `{ "error": "Invalid AI response" }`                 |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1797,12 +1734,12 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -1836,10 +1773,9 @@ export const POST: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in regenerate meal endpoint:", error);
-    
-    const errorMessage =
-      error instanceof Error ? error.message : "Internal server error";
-    
+
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -1891,12 +1827,8 @@ export const POST: APIRoute = async (context) => {
       { "item": "Milk", "quantity": "1 liter" },
       { "item": "Cheese", "quantity": "200g" }
     ],
-    "Meat": [
-      { "item": "Chicken breast", "quantity": "800g" }
-    ],
-    "Other": [
-      { "item": "Olive oil", "quantity": "50ml" }
-    ]
+    "Meat": [{ "item": "Chicken breast", "quantity": "800g" }],
+    "Other": [{ "item": "Olive oil", "quantity": "50ml" }]
   },
   "createdAt": "2025-10-11T10:00:00Z"
 }
@@ -1933,16 +1865,16 @@ export const POST: APIRoute = async (context) => {
 
 ### 7. Obsługa błędów
 
-| Scenariusz | Kod HTTP | Response Body |
-|------------|----------|---------------|
-| Nieprawidłowy UUID | 400 | `{ "error": "Invalid plan ID format" }` |
-| Brak sesji | 401 | `{ "error": "Unauthorized" }` |
-| Plan nie istnieje | 404 | `{ "error": "Meal plan not found" }` |
-| Plan nie należy do usera | 404 | `{ "error": "Meal plan not found" }` |
-| Brak meals w planie | 400 | `{ "error": "No meals found for this plan" }` |
-| Lista już istnieje | 409 | `{ "error": "Shopping list already exists for this plan" }` |
-| Błąd AI service | 500 | `{ "error": "Failed to generate shopping list" }` |
-| Błąd zapisu do bazy | 500 | `{ "error": "Failed to save shopping list" }` |
+| Scenariusz               | Kod HTTP | Response Body                                               |
+| ------------------------ | -------- | ----------------------------------------------------------- |
+| Nieprawidłowy UUID       | 400      | `{ "error": "Invalid plan ID format" }`                     |
+| Brak sesji               | 401      | `{ "error": "Unauthorized" }`                               |
+| Plan nie istnieje        | 404      | `{ "error": "Meal plan not found" }`                        |
+| Plan nie należy do usera | 404      | `{ "error": "Meal plan not found" }`                        |
+| Brak meals w planie      | 400      | `{ "error": "No meals found for this plan" }`               |
+| Lista już istnieje       | 409      | `{ "error": "Shopping list already exists for this plan" }` |
+| Błąd AI service          | 500      | `{ "error": "Failed to generate shopping list" }`           |
+| Błąd zapisu do bazy      | 500      | `{ "error": "Failed to save shopping list" }`               |
 
 ### 8. Rozważania dotyczące wydajności
 
@@ -1984,12 +1916,12 @@ export const prerender = false;
 export const POST: APIRoute = async (context) => {
   try {
     const { supabase } = context.locals;
-    
+
     // Check authentication
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    
+
     if (!user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -2002,21 +1934,14 @@ export const POST: APIRoute = async (context) => {
     const validationResult = UUIDParamSchema.safeParse(planId);
 
     if (!validationResult.success) {
-      return new Response(
-        JSON.stringify({ error: "Invalid plan ID format" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return new Response(JSON.stringify({ error: "Invalid plan ID format" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Generate shopping list
-    const shoppingList = await generateShoppingList(
-      supabase,
-      user.id,
-      validationResult.data
-    );
+    const shoppingList = await generateShoppingList(supabase, user.id, validationResult.data);
 
     return new Response(JSON.stringify(shoppingList), {
       status: 201,
@@ -2024,7 +1949,7 @@ export const POST: APIRoute = async (context) => {
     });
   } catch (error) {
     console.error("Error in generate shopping list endpoint:", error);
-    
+
     // Handle specific error cases
     if (error instanceof Error) {
       if (error.message === "Meal plan not found") {
@@ -2033,27 +1958,27 @@ export const POST: APIRoute = async (context) => {
           headers: { "Content-Type": "application/json" },
         });
       }
-      
+
       if (error.message === "Shopping list already exists for this plan") {
         return new Response(JSON.stringify({ error: error.message }), {
           status: 409,
           headers: { "Content-Type": "application/json" },
         });
       }
-      
+
       if (error.message === "No meals found for this plan") {
         return new Response(JSON.stringify({ error: error.message }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
         });
       }
-      
+
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
       });
     }
-    
+
     return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
@@ -2105,6 +2030,7 @@ export const POST: APIRoute = async (context) => {
 ### Testowanie
 
 Dla każdego endpointu przetestować:
+
 - ✅ Happy path (poprawne dane)
 - ✅ Nieprawidłowe dane wejściowe (400)
 - ✅ Brak uwierzytelnienia (401)
@@ -2123,4 +2049,3 @@ Dla każdego endpointu przetestować:
 - Compression dla dużych response'ów
 - API versioning (/v1/api/...)
 - OpenAPI/Swagger documentation
-

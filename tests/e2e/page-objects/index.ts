@@ -3,7 +3,7 @@
  * Makes importing POM classes easier in test files
  */
 
-export { LoginPage } from './LoginPage';
-export { MealPlanHistoryPage } from './MealPlanHistoryPage';
-export { PlanGenerationPage } from './PlanGenerationPage';
-export { MealPlanDetailPage } from './MealPlanDetailPage';
+export { LoginPage } from "./LoginPage";
+export { MealPlanHistoryPage } from "./MealPlanHistoryPage";
+export { PlanGenerationPage } from "./PlanGenerationPage";
+export { MealPlanDetailPage } from "./MealPlanDetailPage";
