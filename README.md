@@ -1,5 +1,5 @@
 # Meals Planner
-
+test pr
 An intelligent meal planning assistant designed to simplify and automate the creation of meal plans and shopping lists for multi-person households. This web application leverages an AI engine to generate personalized recipes based on user-specific criteria such as the number of people, dietary preferences, and caloric needs, with user account management powered by Supabase.
 
 ## Table of Contents
