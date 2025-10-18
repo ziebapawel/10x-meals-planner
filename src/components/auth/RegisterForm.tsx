@@ -1,23 +1,18 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { UserPlus, Mail, Lock, AlertCircle, CheckCircle } from "lucide-react";
+import { UserPlus, Mail, Lock } from "lucide-react";
 import { registerSchema, type RegisterFormData } from "../../lib/validation/auth.schemas";
 import { PasswordStrengthIndicator } from "./PasswordStrengthIndicator";
-
-interface ErrorResponse {
-  error?: string;
-  message?: string;
-}
+import { useRegister } from "../../lib/hooks/useRegister";
+import { FormErrorMessage } from "../ui/FormErrorMessage";
+import { FormSuccessMessage } from "../ui/FormSuccessMessage";
 
 export function RegisterForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { register: registerUser, isLoading, error, success } = useRegister();
 
   const {
     register,
@@ -36,39 +31,10 @@ export function RegisterForm() {
   const password = watch("password");
 
   const onSubmit = async (data: RegisterFormData) => {
-    setIsLoading(true);
-    setError(null);
-    setSuccess(false);
-
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
-
-      const responseData: ErrorResponse = await response.json();
-
-      if (!response.ok) {
-        // Use the error message from the backend (already translated by auth-error.service)
-        throw new Error(responseData.message || "Nie udało się utworzyć konta");
-      }
-
-      setSuccess(true);
-
-      // Redirect to homepage (meal plans list) after successful registration
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystąpił błąd");
-    } finally {
-      setIsLoading(false);
+      await registerUser(data);
+    } catch {
+      // Error is handled by the useRegister hook
     }
   };
 
@@ -84,22 +50,10 @@ export function RegisterForm() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* Error Message */}
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-start gap-2">
-                <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" />
-                <p className="text-sm text-destructive">{error}</p>
-              </div>
-            )}
+            {error && <FormErrorMessage message={error} />}
 
             {/* Success Message */}
-            {success && (
-              <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900/30 rounded-md p-3 flex items-start gap-2">
-                <CheckCircle className="size-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                <p className="text-sm text-green-600 dark:text-green-400">
-                  Konto zostało utworzone! Przekierowywanie...
-                </p>
-              </div>
-            )}
+            {success && <FormSuccessMessage message="Konto zostało utworzone! Przekierowywanie..." />}
 
             {/* Email Field */}
             <div className="space-y-2">

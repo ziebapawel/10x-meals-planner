@@ -1,21 +1,16 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { LogIn, Mail, Lock, AlertCircle } from "lucide-react";
+import { LogIn, Mail, Lock } from "lucide-react";
 import { loginSchema, type LoginFormData } from "../../lib/validation/auth.schemas";
-
-interface ErrorResponse {
-  error?: string;
-  message?: string;
-}
+import { useLogin } from "../../lib/hooks/useLogin";
+import { FormErrorMessage } from "../ui/FormErrorMessage";
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { login, isLoading, error } = useLogin();
 
   const {
     register,
@@ -30,31 +25,10 @@ export function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError(null);
-
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const responseData: ErrorResponse = await response.json();
-
-      if (!response.ok) {
-        // Use the error message from the backend (already translated by auth-error.service)
-        throw new Error(responseData.message || "Nieprawidłowy email lub hasło");
-      }
-
-      // Redirect to homepage (meal plans list) on success
-      window.location.href = "/";
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystąpił błąd");
-    } finally {
-      setIsLoading(false);
+      await login(data);
+    } catch {
+      // Error is handled by the useLogin hook
     }
   };
 
@@ -70,12 +44,7 @@ export function LoginForm() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" data-testid="login-form">
             {/* Error Message */}
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-start gap-2" data-testid="login-error-message">
-                <AlertCircle className="size-5 text-destructive shrink-0 mt-0.5" />
-                <p className="text-sm text-destructive">{error}</p>
-              </div>
-            )}
+            {error && <FormErrorMessage message={error} testId="login-error-message" />}
 
             {/* Email Field */}
             <div className="space-y-2">
