@@ -12,17 +12,27 @@ import type {
  * Handles all communication with OpenRouter.ai
  */
 
-const OPENROUTER_API_KEY = import.meta.env.OPENROUTER_API_KEY;
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-if (!OPENROUTER_API_KEY) {
-  throw new Error("OPENROUTER_API_KEY is not defined in environment variables");
+/**
+ * Helper function to get OpenRouter API key from runtime or import.meta.env
+ */
+function getOpenRouterKey(runtime?: { env?: { OPENROUTER_API_KEY: string } }): string {
+  const key = runtime?.env?.OPENROUTER_API_KEY || import.meta.env.OPENROUTER_API_KEY;
+  if (!key) {
+    throw new Error("OPENROUTER_API_KEY is not defined in environment variables");
+  }
+  return key;
 }
 
 /**
  * Generates a complete meal plan using AI
  */
-export async function generateMealPlan(command: GenerateMealPlanCommand): Promise<GeneratedMealPlanDto> {
+export async function generateMealPlan(
+  command: GenerateMealPlanCommand,
+  runtime?: { env?: { OPENROUTER_API_KEY: string } }
+): Promise<GeneratedMealPlanDto> {
+  const OPENROUTER_API_KEY = getOpenRouterKey(runtime);
   const prompt = buildMealPlanPrompt(command);
 
   try {
@@ -73,7 +83,11 @@ export async function generateMealPlan(command: GenerateMealPlanCommand): Promis
 /**
  * Regenerates a single meal using AI
  */
-export async function regenerateSingleMeal(command: RegenerateMealCommand): Promise<RegeneratedMealDto> {
+export async function regenerateSingleMeal(
+  command: RegenerateMealCommand,
+  runtime?: { env?: { OPENROUTER_API_KEY: string } }
+): Promise<RegeneratedMealDto> {
+  const OPENROUTER_API_KEY = getOpenRouterKey(runtime);
   const prompt = buildRegenerateMealPrompt(command);
 
   try {
@@ -119,7 +133,11 @@ export async function regenerateSingleMeal(command: RegenerateMealCommand): Prom
 /**
  * Aggregates and categorizes shopping list using AI
  */
-export async function aggregateShoppingList(meals: MealDto[]): Promise<ShoppingListContent> {
+export async function aggregateShoppingList(
+  meals: MealDto[],
+  runtime?: { env?: { OPENROUTER_API_KEY: string } }
+): Promise<ShoppingListContent> {
+  const OPENROUTER_API_KEY = getOpenRouterKey(runtime);
   const prompt = buildShoppingListPrompt(meals);
 
   try {

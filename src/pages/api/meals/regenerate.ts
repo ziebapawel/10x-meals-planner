@@ -45,7 +45,7 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Regenerate meal using AI
-    const regeneratedMeal = await regenerateSingleMeal(validationResult.data);
+    const regeneratedMeal = await regenerateSingleMeal(validationResult.data, context.locals.runtime);
 
     return new Response(JSON.stringify(regeneratedMeal), {
       status: 200,

@@ -3,9 +3,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "./db/database.types.ts";
 
+// Cloudflare runtime environment types
+type Runtime = import("@astrojs/cloudflare").Runtime<Env>;
+
 declare global {
   namespace App {
-    interface Locals {
+    interface Locals extends Runtime {
       supabase: SupabaseClient<Database>;
       user: {
         id: string;
@@ -24,4 +27,11 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
+}
+
+// Cloudflare runtime environment variables
+interface Env {
+  SUPABASE_URL: string;
+  SUPABASE_ANON_KEY: string;
+  OPENROUTER_API_KEY: string;
 }
