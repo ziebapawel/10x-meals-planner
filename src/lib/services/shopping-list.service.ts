@@ -14,7 +14,8 @@ import { aggregateShoppingList } from "./ai.service";
 export async function generateShoppingList(
   supabase: SupabaseClient,
   userId: string,
-  planId: string
+  planId: string,
+  runtime?: { env?: { OPENROUTER_API_KEY: string } }
 ): Promise<ShoppingListDto> {
   // Check if plan exists and belongs to user
   const { error: planError } = await supabase
@@ -61,7 +62,7 @@ export async function generateShoppingList(
   }
 
   // Use AI to aggregate and categorize ingredients
-  const listContent = await aggregateShoppingList(meals as unknown as MealDto[]);
+  const listContent = await aggregateShoppingList(meals as unknown as MealDto[], runtime);
 
   // Save shopping list to database
   const { data: shoppingList, error: saveError } = await supabase

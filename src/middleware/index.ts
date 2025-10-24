@@ -18,6 +18,7 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
   const supabase = createSupabaseServerInstance({
     cookies,
     headers: request.headers,
+    runtime: locals.runtime, // Pass runtime if available (Cloudflare), undefined locally
   });
 
   // Store supabase instance in locals for use in API routes and pages

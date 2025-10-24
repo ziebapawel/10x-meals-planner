@@ -44,7 +44,7 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Generate meal plan using AI
-    const mealPlan = await generateMealPlan(validationResult.data);
+    const mealPlan = await generateMealPlan(validationResult.data, context.locals.runtime);
 
     return new Response(JSON.stringify(mealPlan), {
       status: 200,

@@ -38,7 +38,7 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Generate shopping list
-    const shoppingList = await generateShoppingList(supabase, user.id, validationResult.data);
+    const shoppingList = await generateShoppingList(supabase, user.id, validationResult.data, context.locals.runtime);
 
     return new Response(JSON.stringify(shoppingList), {
       status: 201,
